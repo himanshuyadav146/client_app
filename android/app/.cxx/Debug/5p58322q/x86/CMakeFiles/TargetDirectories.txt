@@ -1,0 +1,2 @@
+/Users/himanshuyadav/StudioProjects/client_app/android/app/.cxx/Debug/5p58322q/x86/CMakeFiles/edit_cache.dir
+/Users/himanshuyadav/StudioProjects/client_app/android/app/.cxx/Debug/5p58322q/x86/CMakeFiles/rebuild_cache.dir

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 Color kLightBackgroundColor = const Color(0xffffffff);
 Color kBackgroundColor = const Color(0xFFFFFFFF);
+Color kBorderColor = const Color(0xFFCCCCCC);
 Color kLightPrimaryColor = const Color(0xffff8900);
 Color kLightSecondaryColor = const Color(0xff040415);
 Color kLightParticlesColor = const Color(0x44948282);
@@ -12,9 +13,6 @@ Color kDarkPrimaryColor = const Color(0xFF1A2127);
 Color kDarkAccentColor = Colors.blueGrey.shade600;
 Color kDarkParticlesColor = const Color(0x441C2A3D);
 Color kDarkTextColor = Colors.white;
-
-
-
 
 class COLOR_CONST {
   static const primaryColor = Color(0xFF3ac5c9);

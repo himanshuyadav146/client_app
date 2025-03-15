@@ -5,11 +5,10 @@ class InternetExceptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(height: MediaQuery.sizeOf(context).height * 0.15,)
-      ]
-    );
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      SizedBox(
+        height: MediaQuery.sizeOf(context).height * 0.15,
+      )
+    ]);
   }
 }

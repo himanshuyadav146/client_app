@@ -1,9 +1,16 @@
+import 'package:client_app/core/constant/font_constant.dart';
 import 'package:client_app/core/index.dart';
+import 'package:client_app/core/widgets/core_text_form_field.dart';
+import 'package:client_app/main.dart';
 import 'package:client_app/views/blocs/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
+import '../../core/constant/icon_constant.dart';
 import '../../core/utils/enums.dart';
+import '../../core/utils/validator.dart';
+import '../../core/widgets/core_text.dart';
 
 class PhoneNoView extends StatefulWidget {
   const PhoneNoView({super.key});
@@ -21,7 +28,7 @@ class _PhoneNoViewState extends State<PhoneNoView> {
   @override
   void initState() {
     super.initState();
-    _loginBloc = LoginBloc();
+    _loginBloc = LoginBloc(authRepository: getIt());
   }
 
   @override
@@ -38,9 +45,11 @@ class _PhoneNoViewState extends State<PhoneNoView> {
       body: BlocProvider<LoginBloc>.value(
         value: _loginBloc,
         child: BlocListener<LoginBloc, LoginState>(
-          listenWhen: (previous, current) => previous.apiStatus != current.apiStatus,
+          listenWhen: (previous, current) =>
+              previous.apiStatus != current.apiStatus,
           listener: (context, state) {
-            if (state.apiStatus == ApiStatus.error || state.apiStatus == ApiStatus.success) {
+            if (state.apiStatus == ApiStatus.error ||
+                state.apiStatus == ApiStatus.success) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.statusMessage)),
               );
@@ -64,55 +73,72 @@ class _PhoneNoViewState extends State<PhoneNoView> {
   Widget _buildLoginForm() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildEmailField(),
-            const SizedBox(height: 20),
-            _buildPasswordField(),
-            const SizedBox(height: 20),
-            _buildLoginButton(),
-          ],
-        ),
-      ),
+      child: Builder(builder: (context) {
+        return Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 100),
+              Center(
+                child:
+                    SvgPicture.asset(ICON_CONST.phone, width: 330, height: 250),
+              ),
+              const SizedBox(height: AppSizes.textSizeXL),
+              CoreLevel(
+                textAlign: TextAlign.center,
+              text: kVerifyPhone,
+              style: const TextStyle(
+                fontSize: AppSizes.textSize22,
+                fontWeight: FontWeight.bold,
+              ),
+              ),
+              const SizedBox(height: AppSizes.textSizeXL),
+              CoreLevel(
+                textAlign: TextAlign.center,
+                text: kSentOTPText,
+                style: const TextStyle(
+                  fontSize: AppSizes.textSizeL,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              const SizedBox(height: AppSizes.textSizeXL),
+              _buildPhoneNoField(),
+              const SizedBox(height: 20),
+              _buildLoginButton(),
+            ],
+          ),
+        );
+      }),
     );
   }
 
-  Widget _buildEmailField() {
+  Widget _buildPhoneNoField() {
     return BlocBuilder<LoginBloc, LoginState>(
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
-        return TextFormField(
+        return CoreTextFormField(
           controller: _emailController,
+          hintText: 'Phone No',
+          hintStyle: TextStyle(
+            color: kBorderColor, // Custom hint text color
+            fontSize: 14, // Custom hint text size
+            fontStyle: FontStyle.italic, // Custom hint text style
+          ),
           keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(
-            hintText: 'Email',
-            border: OutlineInputBorder(),
+          validator: (value) =>
+              UtilValidators.isVietnamesePhoneNumber(value ?? '')
+                  ? 'Please enter phone no'
+                  : null,
+          onChanged: (value) =>
+              context.read<LoginBloc>().add(EmailChange(email: value)),
+          decoration: InputDecoration(
+            hintStyle: TextStyle(color: kDarkParticlesColor),
+            border: OutlineInputBorder(
+              borderRadius: AppRadius.radiusAllS,
+            ),
+            prefixIcon: Icon(Icons.phone),
           ),
-          validator: (value) => value == null || value.isEmpty ? 'Please enter email' : null,
-          onChanged: (value) => context.read<LoginBloc>().add(EmailChange(email: value)),
-        );
-      },
-    );
-  }
-
-  Widget _buildPasswordField() {
-    return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.password != current.password,
-      builder: (context, state) {
-        return TextFormField(
-          controller: _passwordController,
-          keyboardType: TextInputType.visiblePassword,
-          obscureText: true,
-          decoration: const InputDecoration(
-            hintText: 'Password',
-            border: OutlineInputBorder(),
-          ),
-          validator: (value) => value == null || value.isEmpty ? 'Please enter password' : null,
-          onChanged: (value) => context.read<LoginBloc>().add(PasswordChange(password: value)),
         );
       },
     );
@@ -122,16 +148,14 @@ class _PhoneNoViewState extends State<PhoneNoView> {
     return BlocBuilder<LoginBloc, LoginState>(
       buildWhen: (previous, current) => previous.apiStatus != current.apiStatus,
       builder: (context, state) {
-        return ElevatedButton(
-          onPressed: state.apiStatus == ApiStatus.loading
-              ? null
-              : () {
-            if (_formKey.currentState!.validate()) {
-              context.read<LoginBloc>().add(LoginSubmit());
-            }
-          },
-          child: const Text('Login'),
-        );
+        return CoreButton(
+            isLoading: state.apiStatus == ApiStatus.loading,
+            text: 'Send OTP',
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                context.read<LoginBloc>().add(LoginSubmit());
+              }
+            });
       },
     );
   }

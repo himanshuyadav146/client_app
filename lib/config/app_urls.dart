@@ -5,4 +5,3 @@ const String defaultSources = '';
 
 // End URLs
 const String loginUrl = 'api/login';
-

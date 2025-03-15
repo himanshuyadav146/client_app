@@ -1,4 +1,3 @@
-
 import 'package:client_app/core/utils/translate.dart';
 import 'package:flutter/material.dart';
 

@@ -17,15 +17,15 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     splashServices.isLogin(context);
   }
+
   @override
   Widget build(BuildContext context) {
     return CoreScaffold(
         title: '',
         body: InkWell(
-          onTap: (){
+          onTap: () {
             // Navigator.pushNamed(context, RouteName.phoneNo);
             Navigator.of(context).pushNamed(RouteName.phoneNo);
-
           },
           child: Center(
             child: Text('Welcome to Splash Screen'),

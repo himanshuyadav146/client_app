@@ -19,15 +19,14 @@ class NetworkServiceApi implements BaseApiServices {
   }
 
   @override
-  Future postApi(String url, data) async{
-    if(kDebugMode){
+  Future postApi(String url, data) async {
+    if (kDebugMode) {
       print('url - : $url');
       print('data - : $data');
     }
-    try{
-      final response = await http.post(Uri.parse(url),body: data);
+    try {
+      final response = await http.post(Uri.parse(url), body: data);
       return returnResponse(response);
-
     } on SocketException catch (e) {
       throw ServerException(e.toString());
     }

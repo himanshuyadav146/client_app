@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'config/language.dart';
 import 'core/utils/translate.dart';
 
-
 class AppLocaleDelegate extends LocalizationsDelegate<Translate> {
   const AppLocaleDelegate();
 

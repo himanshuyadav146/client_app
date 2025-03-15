@@ -1,5 +1,4 @@
-class RouteName{
-
+class RouteName {
   //main menu
   static const String home = '/';
   //authentication

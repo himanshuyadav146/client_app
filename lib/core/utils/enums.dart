@@ -1,1 +1,1 @@
-enum ApiStatus {initial,loading,success,error}
+enum ApiStatus { initial, loading, success, error }

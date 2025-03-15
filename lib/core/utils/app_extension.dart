@@ -1,4 +1,3 @@
-
 import 'formatter.dart';
 
 extension PriceParsing on int {

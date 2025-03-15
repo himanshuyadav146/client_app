@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../../views/index.dart';
 import '../error/exceptions.dart';
 
-
-
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {

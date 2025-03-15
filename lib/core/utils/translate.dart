@@ -4,8 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 
 import '../../app_locale_delegate.dart';
 
-
-class Translate{
+class Translate {
   final Locale locale;
   Map<String, String>? _localizedStrings;
   static const LocalizationsDelegate<Translate> delegate = AppLocaleDelegate();
@@ -17,7 +16,8 @@ class Translate{
   }
 
   Future<bool> load() async {
-    String content = await rootBundle.loadString("assets/locale/${locale.languageCode}.json");
+    String content = await rootBundle
+        .loadString("assets/locale/${locale.languageCode}.json");
     Map<String, dynamic> jsonMap = jsonDecode(content);
 
     _localizedStrings = jsonMap.map((key, value) {

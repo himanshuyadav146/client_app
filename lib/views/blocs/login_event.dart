@@ -7,12 +7,12 @@ abstract class LoginEvents extends Equatable {
   List<Object> get props => [];
 }
 
-class EmailChange extends LoginEvents {
-  const EmailChange({required this.email});
-  final String email;
+class PhoneNoChange extends LoginEvents {
+  const PhoneNoChange({required this.phoneNo});
+  final String phoneNo;
 
   @override
-  List<Object> get props => [email];
+  List<Object> get props => [phoneNo];
 }
 
 class EmailUnFocus extends LoginEvents {}

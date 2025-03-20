@@ -7,16 +7,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final _api = NetworkServiceApi();
   @override
   Future<AuthResponse> login(data) async {
-    final res = await _api.postApi(baseUrl + loginUrl, data);
+    final res = await _api.postApi(baseUrl + sendOTPUrl, data);
     return AuthResponse.fromJson(res);
   }
-//   final _api = NetworkServiceApi();
-//   AuthRepository({
-//     required NetworkServiceApi _api,
-// });
-
-  // Future<AuthResponse> login(dynamic data) async {
-  //   final res = await _api.postApi(baseUrl + loginUrl, data);
-  //   return AuthResponse.fromJson(res);
-  // }
 }

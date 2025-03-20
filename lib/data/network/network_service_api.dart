@@ -23,9 +23,16 @@ class NetworkServiceApi implements BaseApiServices {
     if (kDebugMode) {
       print('url - : $url');
       print('data - : $data');
+      print("🔹 [REQUEST] Body: ${jsonEncode(data)}");
     }
+    final Map<String, String> headers = {
+      "Content-Type": "application/json",
+    };
     try {
-      final response = await http.post(Uri.parse(url), body: data);
+      final response = await http.post(
+          Uri.parse(url),
+          headers: headers,
+          body: jsonEncode(data));
       return returnResponse(response);
     } on SocketException catch (e) {
       throw ServerException(e.toString());

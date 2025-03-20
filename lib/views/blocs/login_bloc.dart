@@ -11,36 +11,32 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
   AuthRepository authRepository;
 
   LoginBloc({required this.authRepository}) : super(const LoginState()) {
-    on<EmailChange>(_onEmailChanged);
-    on<PasswordChange>(_onPasswordChanged);
+    on<PhoneNoChange>(_onEmailChanged);
+    // on<PasswordChange>(_onPasswordChanged);
     on<LoginSubmit>(_onLoginSubmit);
   }
 
-  void _onEmailChanged(EmailChange event, Emitter<LoginState> emit) {
-    emit(state.copyWith(email: event.email));
+  void _onEmailChanged(PhoneNoChange event, Emitter<LoginState> emit) {
+    emit(state.copyWith(phoneNo: event.phoneNo));
   }
 
-  void _onPasswordChanged(PasswordChange event, Emitter<LoginState> emit) {
-    emit(state.copyWith(password: event.password));
-  }
+  // void _onPasswordChanged(PasswordChange event, Emitter<LoginState> emit) {
+  //   emit(state.copyWith(password: event.password));
+  // }
 
   Future<void> _onLoginSubmit(
       LoginSubmit event, Emitter<LoginState> emit) async {
-    final data = {
-      'email': state.email,
-      'password': state.password,
+
+    final Map<String, dynamic> data = {
+      "mobile": state.phoneNo,
     };
-    // final data = {
-    //   'email': 'eve.holt@reqres.in',
-    //   'password': 'cityslicka',
-    // };
     emit(
       state.copyWith(
         apiStatus: ApiStatus.loading,
       ),
     );
     await authRepository.login(data).then((onValue) {
-      if (onValue.token == null) {
+      if (onValue.data == null) {
         emit(state.copyWith(
             statusMessage: 'Something went wrong', apiStatus: ApiStatus.error));
         return;

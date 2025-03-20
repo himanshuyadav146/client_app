@@ -1,4 +1,3 @@
-import 'package:client_app/core/constant/font_constant.dart';
 import 'package:client_app/core/index.dart';
 import 'package:client_app/core/widgets/core_text_form_field.dart';
 import 'package:client_app/main.dart';
@@ -115,7 +114,7 @@ class _PhoneNoViewState extends State<PhoneNoView> {
 
   Widget _buildPhoneNoField() {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.email != current.email,
+      buildWhen: (previous, current) => previous.phoneNo != current.phoneNo,
       builder: (context, state) {
         return CoreTextFormField(
           controller: _emailController,
@@ -131,7 +130,7 @@ class _PhoneNoViewState extends State<PhoneNoView> {
                   ? 'Please enter phone no'
                   : null,
           onChanged: (value) =>
-              context.read<LoginBloc>().add(EmailChange(email: value)),
+              context.read<LoginBloc>().add(PhoneNoChange(phoneNo: value)),
           decoration: InputDecoration(
             hintStyle: TextStyle(color: kDarkParticlesColor),
             border: OutlineInputBorder(

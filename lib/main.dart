@@ -18,13 +18,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return MaterialApp.router(
+      title: 'Tax App',
       theme: AppTheme.lightTheme,
-      initialRoute: RouteName.home,
-      onGenerateRoute: AppRouter.onGenerateRoute,
-      home: SplashScreen(),
+      routerConfig: AppRouter.router,
     );
+    // return MaterialApp(
+    //   title: 'Flutter Demo',
+    //   theme: AppTheme.lightTheme,
+    //   initialRoute: RouteName.home,
+    //   onGenerateRoute: AppRouter.onGenerateRoute,
+    //   home: SplashScreen(),
+    // );
+
+
   }
 }
 

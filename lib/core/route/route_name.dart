@@ -1,6 +1,7 @@
 class RouteName {
   //main menu
-  static const String home = '/';
+  static const String splashScreen = '/splash-screen';
+  static const String home = '/home';
   //authentication
   static const String otpVerification = '/otp-verification';
   static const String phoneNo = '/phone-no';

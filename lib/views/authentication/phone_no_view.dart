@@ -5,6 +5,7 @@ import 'package:client_app/views/blocs/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constant/icon_constant.dart';
 import '../../core/utils/enums.dart';
@@ -47,8 +48,10 @@ class _PhoneNoViewState extends State<PhoneNoView> {
           listenWhen: (previous, current) =>
               previous.apiStatus != current.apiStatus,
           listener: (context, state) {
-            if (state.apiStatus == ApiStatus.error ||
-                state.apiStatus == ApiStatus.success) {
+            if(state.apiStatus == ApiStatus.success){
+              GoRouter.of(context).push(RouteName.otpVerification);
+              // Navigator.pushNamed(context, RouteName.otpVerification);
+            }else if (state.apiStatus == ApiStatus.error ) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.statusMessage)),
               );

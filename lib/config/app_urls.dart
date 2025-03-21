@@ -7,3 +7,4 @@ const String defaultSources = '';
 // End URLs
 const String loginUrl = 'api/login';
 const String sendOTPUrl = 'api/users/login';
+const String verifyOTP = 'api/users/verifyotp';

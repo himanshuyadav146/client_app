@@ -15,6 +15,14 @@ class PhoneNoChange extends LoginEvents {
   List<Object> get props => [phoneNo];
 }
 
+class OTPChange extends LoginEvents {
+  const OTPChange({required this.otp});
+  final String otp;
+
+  @override
+  List<Object> get props => [otp];
+}
+
 class EmailUnFocus extends LoginEvents {}
 
 class PasswordChange extends LoginEvents {
@@ -28,3 +36,4 @@ class PasswordChange extends LoginEvents {
 class PasswordUnFocus extends LoginEvents {}
 
 class LoginSubmit extends LoginEvents {}
+class VerifyOTP extends LoginEvents {}

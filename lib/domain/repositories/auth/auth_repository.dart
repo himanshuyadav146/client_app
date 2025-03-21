@@ -5,4 +5,5 @@ import '../../../data/models/auth_models/auth_response.dart';
 
 abstract class AuthRepository {
   Future<AuthResponse> login(dynamic data);
+  Future<AuthResponse> otpVerify(dynamic data);
 }

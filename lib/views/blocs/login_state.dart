@@ -32,7 +32,6 @@ class LoginState extends Equatable {
         phoneNo,
         otp,
         statusMessage,
-        apiStatus,
-        apiStatus,
+        apiStatus
       ];
 }

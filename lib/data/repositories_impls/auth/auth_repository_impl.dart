@@ -10,4 +10,10 @@ class AuthRepositoryImpl implements AuthRepository {
     final res = await _api.postApi(baseUrl + sendOTPUrl, data);
     return AuthResponse.fromJson(res);
   }
+
+  @override
+  Future<AuthResponse> otpVerify(data) async{
+    final res = await _api.postApi(baseUrl + verifyOTP, data);
+    return AuthResponse.fromJson(res);
+  }
 }

@@ -16,4 +16,5 @@ class ICON_CONST {
   static const ORDER = "assets/icons/order.svg";
 
   static const phone = "assets/phone.svg";
+  static const verify = "assets/verify.svg";
 }

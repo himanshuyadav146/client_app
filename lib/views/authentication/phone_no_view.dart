@@ -50,7 +50,6 @@ class _PhoneNoViewState extends State<PhoneNoView> {
           listener: (context, state) {
             if(state.apiStatus == ApiStatus.success){
               GoRouter.of(context).push(RouteName.otpVerification);
-              // Navigator.pushNamed(context, RouteName.otpVerification);
             }else if (state.apiStatus == ApiStatus.error ) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.statusMessage)),

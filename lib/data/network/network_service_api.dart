@@ -29,10 +29,8 @@ class NetworkServiceApi implements BaseApiServices {
       "Content-Type": "application/json",
     };
     try {
-      final response = await http.post(
-          Uri.parse(url),
-          headers: headers,
-          body: jsonEncode(data));
+      final response = await http.post(Uri.parse(url),
+          headers: headers, body: jsonEncode(data));
       return returnResponse(response);
     } on SocketException catch (e) {
       throw ServerException(e.toString());

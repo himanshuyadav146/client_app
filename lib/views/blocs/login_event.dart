@@ -36,4 +36,5 @@ class PasswordChange extends LoginEvents {
 class PasswordUnFocus extends LoginEvents {}
 
 class LoginSubmit extends LoginEvents {}
+
 class VerifyOTP extends LoginEvents {}

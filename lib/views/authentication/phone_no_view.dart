@@ -28,13 +28,14 @@ class _PhoneNoViewState extends State<PhoneNoView> {
   @override
   void initState() {
     super.initState();
-    _loginBloc = LoginBloc(authRepository: getIt());
+    _loginBloc = getIt<LoginBloc>();
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _loginBloc.close();
     super.dispose();
   }
 
@@ -48,9 +49,9 @@ class _PhoneNoViewState extends State<PhoneNoView> {
           listenWhen: (previous, current) =>
               previous.apiStatus != current.apiStatus,
           listener: (context, state) {
-            if(state.apiStatus == ApiStatus.success){
+            if (state.apiStatus == ApiStatus.success) {
               GoRouter.of(context).push(RouteName.otpVerification);
-            }else if (state.apiStatus == ApiStatus.error ) {
+            } else if (state.apiStatus == ApiStatus.error) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.statusMessage)),
               );
@@ -88,11 +89,11 @@ class _PhoneNoViewState extends State<PhoneNoView> {
               const SizedBox(height: AppSizes.textSizeXL),
               CoreLevel(
                 textAlign: TextAlign.center,
-              text: kVerifyPhone,
-              style: const TextStyle(
-                fontSize: AppSizes.textSize22,
-                fontWeight: FontWeight.bold,
-              ),
+                text: kVerifyPhone,
+                style: const TextStyle(
+                  fontSize: AppSizes.textSize22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: AppSizes.textSizeXL),
               CoreLevel(

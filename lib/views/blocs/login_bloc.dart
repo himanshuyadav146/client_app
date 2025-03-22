@@ -31,7 +31,6 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
 
   Future<void> _onLoginSubmit(
       LoginSubmit event, Emitter<LoginState> emit) async {
-
     final Map<String, dynamic> data = {
       "mobile": state.phoneNo,
     };
@@ -41,7 +40,7 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
       ),
     );
     await authRepository.login(data).then((onValue) {
-      if (onValue.data == null) {
+      if (onValue.receivedData == null) {
         emit(state.copyWith(
             statusMessage: 'Something went wrong', apiStatus: ApiStatus.error));
         return;
@@ -53,9 +52,7 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
     });
   }
 
-  Future<void> _onVerifyOTP(
-      VerifyOTP event, Emitter<LoginState> emit) async {
-
+  Future<void> _onVerifyOTP(VerifyOTP event, Emitter<LoginState> emit) async {
     final Map<String, dynamic> data = {
       "mobile": state.phoneNo,
       "otp": state.otp
@@ -66,13 +63,13 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
       ),
     );
     await authRepository.otpVerify(data).then((onValue) {
-      if (onValue.data == null) {
+      if (onValue.status == 'success') {
         emit(state.copyWith(
-            statusMessage: 'Something went wrong', apiStatus: ApiStatus.error));
+            statusMessage: 'Success', apiStatus: ApiStatus.success));
         return;
       }
       emit(state.copyWith(
-          statusMessage: 'Success', apiStatus: ApiStatus.success));
+          statusMessage: 'Something went wrong', apiStatus: ApiStatus.error));
     }).catchError((onError) {
       emit(state.copyWith(apiStatus: ApiStatus.error));
     });

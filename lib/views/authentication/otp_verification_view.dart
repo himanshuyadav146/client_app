@@ -25,17 +25,18 @@ class OtpVerificationView extends StatefulWidget {
 }
 
 class _OtpVerificationViewState extends State<OtpVerificationView> {
-  late final LoginBloc _loginBloc;
+  // late final LoginBloc _loginBloc;
   final _formKey = GlobalKey<FormState>();
+  final LoginBloc loginBloc = getIt<LoginBloc>();
 
   final List<TextEditingController> _controllers =
-  List.generate(4, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+      List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   @override
   void initState() {
     super.initState();
-    _loginBloc = LoginBloc(authRepository: getIt());
+    //_loginBloc = LoginBloc(authRepository: getIt());
   }
 
   @override
@@ -51,7 +52,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
 
   void _onOtpEntered() {
     String otp = _controllers.map((c) => c.text).join();
-    if (otp.length == 4) {
+    if (otp.length == 6) {
       context.read<LoginBloc>().add(PhoneNoChange(phoneNo: otp));
       GoRouter.of(context).go(RouteName.home);
     }
@@ -62,10 +63,10 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     return CoreScaffold(
       title: 'OTP Verification',
       body: BlocProvider<LoginBloc>.value(
-        value: _loginBloc,
+        value: loginBloc,
         child: BlocListener<LoginBloc, LoginState>(
           listenWhen: (previous, current) =>
-          previous.apiStatus != current.apiStatus,
+              previous.apiStatus != current.apiStatus,
           listener: (context, state) {
             if (state.apiStatus == ApiStatus.success) {
               GoRouter.of(context).push(RouteName.home);
@@ -131,9 +132,11 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     return KeyboardListener(
       focusNode: FocusNode(),
       onKeyEvent: (KeyEvent event) {
-        if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.backspace) {
-          for (int i = 1; i < 4; i++) {
-            if (_controllers[i].text.isEmpty && _controllers[i - 1].text.isNotEmpty) {
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.backspace) {
+          for (int i = 1; i < 6; i++) {
+            if (_controllers[i].text.isEmpty &&
+                _controllers[i - 1].text.isNotEmpty) {
               _focusNodes[i - 1].requestFocus();
               break;
             }
@@ -144,7 +147,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(4, (index) {
+          children: List.generate(6, (index) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: SizedBox(
@@ -156,7 +159,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   maxLength: 1,
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
                   decoration: InputDecoration(
                     counterText: "",
                     enabledBorder: OutlineInputBorder(
@@ -169,7 +173,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     ),
                   ),
                   onChanged: (value) {
-                    if (value.isNotEmpty && index < 3) {
+                    if (value.isNotEmpty && index < 5) {
                       _focusNodes[index + 1].requestFocus();
                     }
                     _onOtpEntered();
@@ -192,12 +196,12 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
           text: 'Verify OTP',
           onPressed: () {
             String otp = _controllers.map((c) => c.text).join();
-            if (otp.length == 4) {
+            if (otp.length == 6) {
               context.read<LoginBloc>().add(OTPChange(otp: otp));
               context.read<LoginBloc>().add(VerifyOTP());
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Enter all 4 digits")),
+                const SnackBar(content: Text("Enter all 6 digits")),
               );
             }
           },

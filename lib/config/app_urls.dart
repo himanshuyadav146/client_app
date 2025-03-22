@@ -1,10 +1,11 @@
 // App URLS and keys
 // const String baseUrl = 'https://reqres.in/';
-const String baseUrl = 'https://9bcb-103-57-84-243.ngrok-free.app/';  // http://127.0.0.1:3001/api/users/login
+const String baseUrl =
+    'https://allindiaitr.in/'; // http://127.0.0.1:3001/api/users/login
 const String defaultApiKey = '';
 const String defaultSources = '';
 
 // End URLs
 const String loginUrl = 'api/login';
-const String sendOTPUrl = 'api/users/login';
-const String verifyOTP = 'api/users/verifyotp';
+const String sendOTPUrl = 'login.php';
+const String verifyOTP = 'otpvalidate.php';

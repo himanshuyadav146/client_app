@@ -1,6 +1,7 @@
 import '../../../config/app_urls.dart';
 import '../../../domain/repositories/auth/auth_repository.dart';
 import '../../models/auth_models/auth_response.dart';
+import '../../models/auth_models/otp_verification_response.dart';
 import '../../network/network_service_api.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -12,8 +13,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthResponse> otpVerify(data) async{
+  Future<OTPVerificationResponse> otpVerify(data) async {
     final res = await _api.postApi(baseUrl + verifyOTP, data);
-    return AuthResponse.fromJson(res);
+    return OTPVerificationResponse.fromJson(res);
   }
 }

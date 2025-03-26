@@ -15,7 +15,7 @@ import '../../core/widgets/core_scafold.dart';
 import '../../core/widgets/core_text.dart';
 import '../../core/widgets/loader_widget.dart';
 import '../../main.dart';
-import '../blocs/login_bloc.dart';
+import '../blocs/auth/login_bloc.dart';
 
 class OtpVerificationView extends StatefulWidget {
   const OtpVerificationView({super.key});
@@ -69,7 +69,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
               previous.apiStatus != current.apiStatus,
           listener: (context, state) {
             if (state.apiStatus == ApiStatus.success) {
-              GoRouter.of(context).push(RouteName.home);
+              // GoRouter.of(context).push(RouteName.home);
+              GoRouter.of(context).go(RouteName.home);
             } else if (state.apiStatus == ApiStatus.error) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.statusMessage)),

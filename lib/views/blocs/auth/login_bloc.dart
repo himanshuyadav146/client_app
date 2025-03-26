@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:client_app/core/utils/enums.dart';
 import 'package:equatable/equatable.dart';
-import '../../domain/repositories/auth/auth_repository.dart';
+import '../../../domain/repositories/auth/auth_repository.dart';
+import '../../../services/session_manager/session_manager.dart';
 
 part 'login_event.dart';
 
@@ -45,6 +48,7 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
             statusMessage: 'Something went wrong', apiStatus: ApiStatus.error));
         return;
       }
+      emit(LoginState(phoneNo: onValue.receivedData?.mobile ?? ''));
       emit(state.copyWith(
           statusMessage: 'Success', apiStatus: ApiStatus.success));
     }).catchError((onError) {
@@ -54,7 +58,8 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
 
   Future<void> _onVerifyOTP(VerifyOTP event, Emitter<LoginState> emit) async {
     final Map<String, dynamic> data = {
-      "mobile": state.phoneNo,
+      // "mobile": state.phoneNo,
+      "mobile": '9096464534',
       "otp": state.otp
     };
     emit(
@@ -62,8 +67,9 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
         apiStatus: ApiStatus.loading,
       ),
     );
-    await authRepository.otpVerify(data).then((onValue) {
+    await authRepository.otpVerify(data).then((onValue) async {
       if (onValue.status == 'success') {
+        await SessionController().saveUserInPref(jsonEncode(onValue));
         emit(state.copyWith(
             statusMessage: 'Success', apiStatus: ApiStatus.success));
         return;

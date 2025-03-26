@@ -11,3 +11,4 @@ const String kSentOTPText =
     'We Will send you a one time password on this  Mobile Number';
 const String kDoNotHave = 'Do not get OTP  ?';
 const String kResendOTP = 'Re-Send OTP  ?';
+const String kFileYourTax = 'File your income tax return with AllIndia ITR';

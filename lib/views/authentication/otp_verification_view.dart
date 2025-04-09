@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../blocs/auth/login_bloc.dart';
 import '../../core/constant/app_sizes.dart';
 import '../../core/constant/colors.dart';
 import '../../core/constant/icon_constant.dart';
@@ -15,7 +16,6 @@ import '../../core/widgets/core_scafold.dart';
 import '../../core/widgets/core_text.dart';
 import '../../core/widgets/loader_widget.dart';
 import '../../main.dart';
-import '../blocs/auth/login_bloc.dart';
 
 class OtpVerificationView extends StatefulWidget {
   const OtpVerificationView({super.key});

@@ -16,6 +16,7 @@ class CoreScaffold extends StatelessWidget {
   final TextStyle? appBarTitleStyle; // AppBar title text style
   final IconThemeData? appBarIconTheme; // AppBar icon theme
   final bool? centerTitle; // Whether to center the AppBar title
+  final bool showBackButton;
 
   CoreScaffold({
     super.key,
@@ -34,6 +35,7 @@ class CoreScaffold extends StatelessWidget {
     this.appBarTitleStyle,
     this.appBarIconTheme,
     this.centerTitle,
+    this.showBackButton = false,
   });
 
   @override
@@ -51,6 +53,14 @@ class CoreScaffold extends StatelessWidget {
         elevation: appBarElevation ?? Theme.of(context).appBarTheme.elevation,
         iconTheme: appBarIconTheme ?? Theme.of(context).appBarTheme.iconTheme,
         centerTitle: centerTitle ?? Theme.of(context).appBarTheme.centerTitle,
+        leading: showBackButton
+            ? IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        )
+            : null,
       )
           : null,
       resizeToAvoidBottomInset: isResizeToAvoidBottomInset,

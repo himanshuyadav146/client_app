@@ -25,6 +25,16 @@ class UtilValidators {
     return name.isNotEmpty;
   }
 
+  static isValidString(String name) {
+    return name.isNotEmpty;
+  }
+
+  static isValidNumeric(String input) {
+    return input.isNotEmpty && RegExp(r'^[0-9]+$').hasMatch(input);
+  }
+
+
+
   ///Singleton factory
   static final UtilValidators _instance = UtilValidators._internal();
 

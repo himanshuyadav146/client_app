@@ -76,6 +76,7 @@ class CoreTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,

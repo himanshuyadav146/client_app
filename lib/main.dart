@@ -2,12 +2,15 @@ import 'package:client_app/core/index.dart';
 import 'package:client_app/core/theme/app_theme.dart';
 import 'package:client_app/data/repositories_impls/auth/auth_repository_impl.dart';
 import 'package:client_app/domain/repositories/auth/auth_repository.dart';
-import 'package:client_app/views/blocs/auth/login_bloc.dart';
-import 'package:client_app/views/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+import 'blocs/auth/login_bloc.dart';
+import 'blocs/income_source/income_source_bloc.dart';
+import 'data/models/persional_info/persional_info.dart';
+
 GetIt getIt = GetIt.instance;
+
 void main() {
   servicesLocator();
   runApp(const MyApp());
@@ -29,7 +32,17 @@ class MyApp extends StatelessWidget {
 
 void servicesLocator() {
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
+  getIt.registerFactory<LoginBloc>(
+      () => LoginBloc(authRepository: getIt<AuthRepository>()));
 
-  // Register LoginBloc as a factory (creates a new instance each time)
-  getIt.registerFactory<LoginBloc>(() => LoginBloc(authRepository: getIt<AuthRepository>()));
+  // Register IncomeSourceBloc as a LazySingleton (better for stateful UI updates)
+  getIt.registerLazySingleton<IncomeSourceBloc>(() => IncomeSourceBloc());
+  getIt.registerLazySingleton<PersionalInfoModel>(() => PersionalInfoModel(
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      panNumber: '',
+      email: '',
+      dob: '',
+  ));
 }

@@ -1,5 +1,7 @@
 import 'package:client_app/core/route/route_name.dart';
+import 'package:client_app/views/persional_info/persional_info.dart';
 import 'package:flutter/material.dart';
+import '../../views/income_source/income_source.dart';
 import '../../views/index.dart';
 
 import 'package:go_router/go_router.dart';
@@ -23,6 +25,14 @@ class AppRouter {
       GoRoute(
         path: RouteName.otpVerification,
         builder: (context, state) => const OtpVerificationView(),
+      ),
+      GoRoute(
+        path: RouteName.incomeSource,
+        builder: (context, state) => IncomeSourceView(),
+      ),
+      GoRoute(
+        path: RouteName.persionalInfo,
+        builder: (context, state) => PersionalInfo(),
       ),
     ],
     errorPageBuilder: (context, state) => MaterialPage(

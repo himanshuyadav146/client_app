@@ -1,12 +1,12 @@
 import 'package:client_app/core/index.dart';
 import 'package:client_app/core/widgets/core_text_form_field.dart';
 import 'package:client_app/main.dart';
-import 'package:client_app/views/blocs/auth/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../blocs/auth/login_bloc.dart';
 import '../../core/constant/icon_constant.dart';
 import '../../core/utils/enums.dart';
 import '../../core/utils/validator.dart';

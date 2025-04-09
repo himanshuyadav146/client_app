@@ -2,6 +2,7 @@ import 'package:client_app/core/index.dart';
 import 'package:client_app/core/widgets/core_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/constant/icon_constant.dart';
 
@@ -17,7 +18,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return CoreScaffold(
       title: 'Choose Services',
-      body: _buildHomeView(),
+      body: _buildHomeView(context),
       isDrawer: false,
       isResizeToAvoidBottomInset: false,
       appBarBackgroundColor: Theme.of(context).primaryColor,
@@ -26,7 +27,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-Widget _buildHomeView() {
+Widget _buildHomeView(BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
@@ -70,7 +71,7 @@ Widget _buildHomeView() {
               height: 20,
             ),
             CoreButton(text: 'Start your tax return', onPressed: () {
-
+              GoRouter.of(context).push(RouteName.incomeSource);
             })
           ],
         ),

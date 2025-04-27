@@ -17,6 +17,7 @@ class CoreScaffold extends StatelessWidget {
   final IconThemeData? appBarIconTheme; // AppBar icon theme
   final bool? centerTitle; // Whether to center the AppBar title
   final bool showBackButton;
+  final Color? backgroundColor; // Scaffold background color
 
   CoreScaffold({
     super.key,
@@ -36,11 +37,13 @@ class CoreScaffold extends StatelessWidget {
     this.appBarIconTheme,
     this.centerTitle,
     this.showBackButton = false,
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       appBar: isAppBar
           ? AppBar(
         title: Text(

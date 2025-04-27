@@ -18,4 +18,6 @@ class RouteName {
   static const String filter = '/filter';
   static const String incomeSource = '/income-source';
   static const String persionalInfo = '/persional-info';
+  static const String importantDetails = '/important_details';
+  static const String documentsUpload = '/document_upload';
 }

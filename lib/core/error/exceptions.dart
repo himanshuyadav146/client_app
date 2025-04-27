@@ -1,16 +1,6 @@
 // //date
 import '../constant/strings.dart';
 //
-// class ServerException implements Exception {}
-//
-// class CacheException implements Exception {}
-//
-//
-// //route
-// class RouteException implements Exception {
-//   final String message;
-//   const RouteException(this.message);
-// }
 
 class AppException implements Exception {
   final String? _message;

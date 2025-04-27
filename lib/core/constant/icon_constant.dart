@@ -18,4 +18,5 @@ class ICON_CONST {
   static const phone = "assets/phone.svg";
   static const verify = "assets/verify.svg";
   static const banner = "assets/banner.svg";
+  static const upload = "assets/upload.svg";
 }

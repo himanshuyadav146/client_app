@@ -9,6 +9,7 @@ Color kLightParticlesColor = const Color(0x44948282);
 Color kLightTextColor = Colors.black54;
 
 Color kDarkBackgroundColor = const Color(0xFF1A2127);
+Color kDocumentBackgroundColor = const Color(0xFFf7f4eb);
 Color kDarkPrimaryColor = const Color(0xFF1A2127);
 Color kDarkAccentColor = Colors.blueGrey.shade600;
 Color kDarkParticlesColor = const Color(0x441C2A3D);

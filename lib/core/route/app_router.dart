@@ -1,6 +1,8 @@
 import 'package:client_app/core/route/route_name.dart';
+import 'package:client_app/views/documents_upload/documents_upload.dart';
 import 'package:client_app/views/persional_info/persional_info.dart';
 import 'package:flutter/material.dart';
+import '../../views/important_details/inportant_details.dart';
 import '../../views/income_source/income_source.dart';
 import '../../views/index.dart';
 
@@ -33,6 +35,14 @@ class AppRouter {
       GoRoute(
         path: RouteName.persionalInfo,
         builder: (context, state) => PersionalInfo(),
+      ),
+      GoRoute(
+        path: RouteName.importantDetails,
+        builder: (context, state) => ImportantDetails(),
+      ),
+      GoRoute(
+        path: RouteName.documentsUpload,
+        builder: (context, state) => DocumentsUpload(),
       ),
     ],
     errorPageBuilder: (context, state) => MaterialPage(

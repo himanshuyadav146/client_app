@@ -1,35 +1,34 @@
 import 'package:client_app/core/index.dart';
-import 'package:client_app/core/widgets/core_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/utils/validator.dart';
-import '../../core/widgets/core_drop_down.dart';
+import '../../core/widgets/core_text.dart';
 import '../../core/widgets/core_text_form_field.dart';
 
-class PersionalInfo extends StatefulWidget {
-  const PersionalInfo({super.key});
+class ImportantDetails extends StatefulWidget {
+  const ImportantDetails({super.key});
 
   @override
-  State<PersionalInfo> createState() => _PersionalInfoState();
+  State<ImportantDetails> createState() => _ImportantDetailsState();
 }
 
-class _PersionalInfoState extends State<PersionalInfo> {
+class _ImportantDetailsState extends State<ImportantDetails> {
+
   final _formKey = GlobalKey<FormState>();
-  final _firstName = TextEditingController();
-  final _middleName = TextEditingController();
-  final _lastName = TextEditingController();
-  final _email = TextEditingController();
-  final _dob = TextEditingController();
-  final _pan = TextEditingController();
-  final _aadhaar = TextEditingController();
-  final _financialYear = TextEditingController();
+  final _interestIncome = TextEditingController();
+  final _interestOnFD = TextEditingController();
+  final _anyOtherIncome = TextEditingController();
+  final _address = TextEditingController();
+  final _state = TextEditingController();
+  final _city = TextEditingController();
+  final _pin = TextEditingController();
   bool _formSubmitted = false;
 
   @override
   Widget build(BuildContext context) {
     return CoreScaffold(
-        title: 'Persional Information',
+        title: "Important Details",
         appBarBackgroundColor: Theme.of(context).primaryColor,
         appBarForegroundColor: Colors.white,
         showBackButton: true,
@@ -37,17 +36,18 @@ class _PersionalInfoState extends State<PersionalInfo> {
           padding: AppPadding.paddingAllM,
           child: Column(
             children: [
-              Expanded(child: _persionalInfoForm()),
+              Expanded(child: _importantDetailsForm()),
               const SizedBox(height: AppSizes.paddingS),
               _buildFormSubmit(context),
             ],
           ),
         ),
         isDrawer: false,
-        isResizeToAvoidBottomInset: false);
+        isResizeToAvoidBottomInset: false
+    );
   }
 
-  Widget _persionalInfoForm() {
+  Widget _importantDetailsForm() {
     return Form(
       key: _formKey,
       autovalidateMode: _formSubmitted
@@ -59,47 +59,11 @@ class _PersionalInfoState extends State<PersionalInfo> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CoreLevel(text: 'Financial Year | Assessment Year'),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreDropdown<String>(
-              items: const ['Option 1', 'Option 2', 'Option 3'],
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                hintText: 'Select an option',
-                hintStyle: TextStyle(color: kDarkParticlesColor),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'First Name'),
+            CoreLevel(text: 'Interest Income'),
             const SizedBox(height: AppSizes.paddingXXS),
             CoreTextFormField(
-              controller: _firstName,
-              hintText: 'First Name',
+              controller: _interestIncome,
+              hintText: 'Interest Income',
               hintStyle: TextStyle(
                 color: kBorderColor,
                 fontSize: 14,
@@ -107,10 +71,6 @@ class _PersionalInfoState extends State<PersionalInfo> {
               ),
               keyboardType: TextInputType.text,
               validator: (value) {
-                if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter First Name';
-                }
-                return null;
               },
               onChanged: (value) {},
               decoration: InputDecoration(
@@ -138,27 +98,23 @@ class _PersionalInfoState extends State<PersionalInfo> {
                 disabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusAllS,
                   borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
+                  BorderSide(color: kDarkParticlesColor.withBlue(5)),
                 ),
               ),
             ),
             const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'Middle Name'),
+            CoreLevel(text: 'Interest on RDs or FD'),
             const SizedBox(height: AppSizes.paddingXXS),
             CoreTextFormField(
-              controller: _middleName,
-              hintText: 'Enter Financial Year',
+              controller: _interestOnFD,
+              hintText: 'Interest on RDs or FD',
               hintStyle: TextStyle(
                 color: kBorderColor,
                 fontSize: 14,
                 fontStyle: FontStyle.italic,
               ),
               keyboardType: TextInputType.text,
-              validator: (value) {
-                if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter Middle Name';
-                }
-                return null; // Success
+              validator: (value) {// Success
               },
               onChanged: (value) {},
               decoration: InputDecoration(
@@ -186,27 +142,23 @@ class _PersionalInfoState extends State<PersionalInfo> {
                 disabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusAllS,
                   borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
+                  BorderSide(color: kDarkParticlesColor.withBlue(5)),
                 ),
               ),
             ),
             const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'Last Name'),
+            CoreLevel(text: 'Any Other Income'),
             const SizedBox(height: AppSizes.paddingXXS),
             CoreTextFormField(
-              controller: _lastName,
-              hintText: 'Enter Financial Year',
+              controller: _anyOtherIncome,
+              hintText: 'Any Other Income',
               hintStyle: TextStyle(
                 color: kBorderColor,
                 fontSize: 14,
                 fontStyle: FontStyle.italic,
               ),
               keyboardType: TextInputType.text,
-              validator: (value) {
-                if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter Last Name';
-                }
-                return null; // Success
+              validator: (value) {// Success
               },
               onChanged: (value) {},
               decoration: InputDecoration(
@@ -234,16 +186,26 @@ class _PersionalInfoState extends State<PersionalInfo> {
                 disabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusAllS,
                   borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
+                  BorderSide(color: kDarkParticlesColor.withBlue(5)),
                 ),
               ),
             ),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'Email'),
-            const SizedBox(height: AppSizes.paddingXXS),
+
+            const SizedBox(height: AppSizes.paddingS),
+              CoreLevel(
+                  text: 'Current Address',
+                  style: TextStyle(
+                    color: kDarkPrimaryColor,
+                    fontSize: 18,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w600
+                  )),
+            const SizedBox(height: AppSizes.paddingS),
+
+            CoreLevel(text: 'Full Address'),
             CoreTextFormField(
-              controller: _email,
-              hintText: 'Enter Financial Year',
+              controller: _address,
+              hintText: 'Full Address',
               hintStyle: TextStyle(
                 color: kBorderColor,
                 fontSize: 14,
@@ -251,8 +213,8 @@ class _PersionalInfoState extends State<PersionalInfo> {
               ),
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
-                if (!UtilValidators.isValidEmail(value ?? '')) {
-                  return 'Please enter Email';
+                if (!UtilValidators.isValidString(value ?? '')) {
+                  return 'Please enter Address';
                 }
                 return null; // Success
               },
@@ -282,16 +244,16 @@ class _PersionalInfoState extends State<PersionalInfo> {
                 disabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusAllS,
                   borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
+                  BorderSide(color: kDarkParticlesColor.withBlue(5)),
                 ),
               ),
             ),
             const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'PAN'),
+            CoreLevel(text: 'State'),
             const SizedBox(height: AppSizes.paddingXXS),
             CoreTextFormField(
-              controller: _pan,
-              hintText: 'Enter PAN',
+              controller: _state,
+              hintText: 'State',
               hintStyle: TextStyle(
                 color: kBorderColor,
                 fontSize: 14,
@@ -330,15 +292,16 @@ class _PersionalInfoState extends State<PersionalInfo> {
                 disabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusAllS,
                   borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
+                  BorderSide(color: kDarkParticlesColor.withBlue(5)),
                 ),
               ),
             ),
-            CoreLevel(text: 'Aadhaar Card No'),
+            const SizedBox(height: AppSizes.paddingXXS),
+            CoreLevel(text: 'City'),
             const SizedBox(height: AppSizes.paddingXXS),
             CoreTextFormField(
-              controller: _aadhaar,
-              hintText: 'Enter Aadhaar',
+              controller: _city,
+              hintText: 'Enter City',
               hintStyle: TextStyle(
                 color: kBorderColor,
                 fontSize: 14,
@@ -377,27 +340,27 @@ class _PersionalInfoState extends State<PersionalInfo> {
                 disabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusAllS,
                   borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
+                  BorderSide(color: kDarkParticlesColor.withBlue(5)),
                 ),
               ),
             ),
             const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'DOB'),
+            CoreLevel(text: 'Enter Pin Code'),
             const SizedBox(height: AppSizes.paddingXXS),
             CoreTextFormField(
-              controller: _dob,
-              hintText: 'Enter DOB',
+              controller: _pin,
+              hintText: 'Enter Pin Code',
               hintStyle: TextStyle(
                 color: kBorderColor,
                 fontSize: 14,
                 fontStyle: FontStyle.italic,
               ),
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.text,
               validator: (value) {
                 if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter DOB';
+                  return 'Please enter Aadhaar Card No';
                 }
-                return null; // Success
+                return null;
               },
               onChanged: (value) {},
               decoration: InputDecoration(
@@ -425,11 +388,12 @@ class _PersionalInfoState extends State<PersionalInfo> {
                 disabledBorder: OutlineInputBorder(
                   borderRadius: AppRadius.radiusAllS,
                   borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
+                  BorderSide(color: kDarkParticlesColor.withBlue(5)),
                 ),
               ),
             ),
-          ],
+            const SizedBox(height: AppSizes.paddingXXS),
+        ]
         ),
       ),
     );
@@ -444,7 +408,7 @@ class _PersionalInfoState extends State<PersionalInfo> {
           });
 
           if (_formKey.currentState?.validate() ?? false) {
-            GoRouter.of(context).push(RouteName.importantDetails);
+            GoRouter.of(context).push(RouteName.documentsUpload);
           }
         });
   }

@@ -1,7 +1,8 @@
-import 'package:client_app/data/models/persional_info/persional_info.dart';
+
 
 import '../../../config/app_urls.dart';
 import '../../../domain/repositories/persional_info/persional_info_repository.dart';
+import '../../models/persional_info/persional_info_model.dart';
 import '../../network/network_service_api.dart';
 
 class PersionalInfoRepositoryImpl implements PersionalInfoRepository {

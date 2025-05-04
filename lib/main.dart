@@ -7,7 +7,7 @@ import 'package:get_it/get_it.dart';
 
 import 'blocs/auth/login_bloc.dart';
 import 'blocs/income_source/income_source_bloc.dart';
-import 'data/models/persional_info/persional_info.dart';
+import 'data/models/persional_info/persional_info_model.dart';
 
 GetIt getIt = GetIt.instance;
 

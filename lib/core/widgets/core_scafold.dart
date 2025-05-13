@@ -18,6 +18,7 @@ class CoreScaffold extends StatelessWidget {
   final bool? centerTitle; // Whether to center the AppBar title
   final bool showBackButton;
   final Color? backgroundColor; // Scaffold background color
+  final VoidCallback? onBackButtonPressed;
 
   CoreScaffold({
     super.key,
@@ -38,6 +39,7 @@ class CoreScaffold extends StatelessWidget {
     this.centerTitle,
     this.showBackButton = false,
     this.backgroundColor,
+    this.onBackButtonPressed,
   });
 
   @override
@@ -66,9 +68,8 @@ class CoreScaffold extends StatelessWidget {
               leading: showBackButton
                   ? IconButton(
                       icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: onBackButtonPressed ??
+                          () => Navigator.of(context).pop(),
                     )
                   : null,
             )

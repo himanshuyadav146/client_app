@@ -86,9 +86,12 @@ class _IncomeSourceViewState extends State<IncomeSourceView> {
                   height: 50,
                   child: CoreButton(
                     text: 'Continue',
-                    onPressed: () {
-                      GoRouter.of(context).go(RouteName.persionalInfo);
-                    },
+                    isDisabled: _selectedCategory.isEmpty,
+                    onPressed: _selectedCategory.isNotEmpty
+                        ? () {
+                            GoRouter.of(context).push(RouteName.persionalInfo);
+                          }
+                        : () {},
                   ),
                 ),
               ),

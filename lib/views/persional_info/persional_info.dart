@@ -16,6 +16,7 @@ class PersionalInfo extends StatefulWidget {
 
 class _PersionalInfoState extends State<PersionalInfo> {
   final _formKey = GlobalKey<FormState>();
+
   final _firstName = TextEditingController();
   final _middleName = TextEditingController();
   final _lastName = TextEditingController();
@@ -23,411 +24,111 @@ class _PersionalInfoState extends State<PersionalInfo> {
   final _dob = TextEditingController();
   final _pan = TextEditingController();
   final _aadhaar = TextEditingController();
-  final _financialYear = TextEditingController();
+
   bool _formSubmitted = false;
+
+  String? _selectedFinancialYear;
 
   @override
   Widget build(BuildContext context) {
     return CoreScaffold(
-        title: 'Persional Information',
-        appBarBackgroundColor: Theme.of(context).primaryColor,
-        appBarForegroundColor: Colors.white,
-        showBackButton: true,
-        body: Padding(
-          padding: AppPadding.paddingAllM,
-          child: Column(
-            children: [
-              Expanded(child: _persionalInfoForm()),
-              const SizedBox(height: AppSizes.paddingS),
-              _buildFormSubmit(context),
-            ],
-          ),
+      title: 'Personal Information',
+      appBarBackgroundColor: Theme.of(context).primaryColor,
+      appBarForegroundColor: Colors.white,
+      showBackButton: true,
+      isDrawer: false,
+      isResizeToAvoidBottomInset: true,
+      onBackButtonPressed: () {
+        Navigator.of(context).pop();
+      },
+      body: Padding(
+        padding: AppPadding.paddingAllM,
+        child: Column(
+          children: [
+            Expanded(child: _buildForm()),
+            const SizedBox(height: AppSizes.paddingM),
+            _buildFormSubmit(context),
+          ],
         ),
-        isDrawer: false,
-        isResizeToAvoidBottomInset: false);
+      ),
+    );
   }
 
-  Widget _persionalInfoForm() {
+  Widget _buildForm() {
     return Form(
       key: _formKey,
       autovalidateMode: _formSubmitted
           ? AutovalidateMode.onUserInteraction
           : AutovalidateMode.disabled,
       child: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CoreLevel(text: 'Financial Year | Assessment Year'),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreDropdown<String>(
-              items: const ['Option 1', 'Option 2', 'Option 3'],
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                hintText: 'Select an option',
-                hintStyle: TextStyle(color: kDarkParticlesColor),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
+            _formSectionLabel('Financial Year'),
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSizes.paddingS),
+              child: DropdownButtonHideUnderline(
+                child: CoreDropdown<String>(
+                  items: const ['2021-2022', '2022-2023', '2023-2024'],
+                  value: _selectedFinancialYear,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedFinancialYear = value;
+                    });
+                  },
+                  prefixIcon: null,
+                  decoration: _inputDecoration(hint: 'Select Financial Year'),
+                  validator: (value) =>
+                      value == null ? 'Please select a financial year' : null,
                 ),
               ),
             ),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'First Name'),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreTextFormField(
+            _formSectionLabel('First Name'),
+            _buildTextField(
               controller: _firstName,
-              hintText: 'First Name',
-              hintStyle: TextStyle(
-                color: kBorderColor,
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-              ),
-              keyboardType: TextInputType.text,
-              validator: (value) {
-                if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter First Name';
-                }
-                return null;
-              },
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                hintStyle: TextStyle(color: kDarkParticlesColor),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
-                ),
-              ),
+              hintText: 'Enter First Name',
+              validator: (value) => _validateRequired(value, 'First Name'),
             ),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'Middle Name'),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreTextFormField(
+            _formSectionLabel('Middle Name'),
+            _buildTextField(
               controller: _middleName,
-              hintText: 'Enter Financial Year',
-              hintStyle: TextStyle(
-                color: kBorderColor,
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-              ),
-              keyboardType: TextInputType.text,
-              validator: (value) {
-                if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter Middle Name';
-                }
-                return null; // Success
-              },
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                hintStyle: TextStyle(color: kDarkParticlesColor),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
-                ),
-              ),
+              hintText: 'Enter Middle Name',
+              validator: (value) => _validateRequired(value, 'Middle Name'),
             ),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'Last Name'),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreTextFormField(
+            _formSectionLabel('Last Name'),
+            _buildTextField(
               controller: _lastName,
-              hintText: 'Enter Financial Year',
-              hintStyle: TextStyle(
-                color: kBorderColor,
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-              ),
-              keyboardType: TextInputType.text,
-              validator: (value) {
-                if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter Last Name';
-                }
-                return null; // Success
-              },
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                hintStyle: TextStyle(color: kDarkParticlesColor),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
-                ),
-              ),
+              hintText: 'Enter Last Name',
+              validator: (value) => _validateRequired(value, 'Last Name'),
             ),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'Email'),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreTextFormField(
+            _formSectionLabel('Email'),
+            _buildTextField(
               controller: _email,
-              hintText: 'Enter Financial Year',
-              hintStyle: TextStyle(
-                color: kBorderColor,
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-              ),
+              hintText: 'Enter Email',
               keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (!UtilValidators.isValidEmail(value ?? '')) {
-                  return 'Please enter Email';
-                }
-                return null; // Success
-              },
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                hintStyle: TextStyle(color: kDarkParticlesColor),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
-                ),
-              ),
+              validator: (value) => UtilValidators.isValidEmail(value ?? '')
+                  ? null
+                  : 'Please enter a valid Email',
             ),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'PAN'),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreTextFormField(
+            _formSectionLabel('PAN'),
+            _buildTextField(
               controller: _pan,
               hintText: 'Enter PAN',
-              hintStyle: TextStyle(
-                color: kBorderColor,
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-              ),
-              keyboardType: TextInputType.text,
-              validator: (value) {
-                if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter PAN';
-                }
-                return null;
-              },
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                hintStyle: TextStyle(color: kDarkParticlesColor),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
-                ),
-              ),
+              validator: (value) => _validateRequired(value, 'PAN'),
             ),
-            CoreLevel(text: 'Aadhaar Card No'),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreTextFormField(
+            _formSectionLabel('Aadhaar Card Number'),
+            _buildTextField(
               controller: _aadhaar,
-              hintText: 'Enter Aadhaar',
-              hintStyle: TextStyle(
-                color: kBorderColor,
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-              ),
-              keyboardType: TextInputType.text,
-              validator: (value) {
-                if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter Aadhaar Card No';
-                }
-                return null;
-              },
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                hintStyle: TextStyle(color: kDarkParticlesColor),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
-                ),
-              ),
+              hintText: 'Enter Aadhaar Card Number',
+              validator: (value) =>
+                  _validateRequired(value, 'Aadhaar Card Number'),
             ),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreLevel(text: 'DOB'),
-            const SizedBox(height: AppSizes.paddingXXS),
-            CoreTextFormField(
+            _formSectionLabel('Date of Birth'),
+            _buildTextField(
               controller: _dob,
-              hintText: 'Enter DOB',
-              hintStyle: TextStyle(
-                color: kBorderColor,
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-              ),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (!UtilValidators.isValidString(value ?? '')) {
-                  return 'Please enter DOB';
-                }
-                return null; // Success
-              },
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                hintStyle: TextStyle(color: kDarkParticlesColor),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: kDarkParticlesColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide: BorderSide(color: Colors.red),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.radiusAllS,
-                  borderSide:
-                      BorderSide(color: kDarkParticlesColor.withBlue(5)),
-                ),
-              ),
+              hintText: 'DD/MM/YYYY',
+              keyboardType: TextInputType.datetime,
+              validator: (value) => _validateRequired(value, 'Date of Birth'),
             ),
           ],
         ),
@@ -435,17 +136,87 @@ class _PersionalInfoState extends State<PersionalInfo> {
     );
   }
 
+  Widget _formSectionLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(
+          top: AppSizes.paddingS, bottom: AppSizes.paddingXXS),
+      child: CoreLevel(text: text),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required String? Function(String?) validator,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSizes.paddingS),
+      child: CoreTextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        hintText: hintText,
+        hintStyle: TextStyle(
+          color: kBorderColor,
+          fontSize: 14,
+          fontStyle: FontStyle.italic,
+        ),
+        validator: validator,
+        onChanged: (_) {},
+        decoration: _inputDecoration(hint: hintText),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration({required String hint}) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: kDarkParticlesColor),
+      border: OutlineInputBorder(
+        borderRadius: AppRadius.radiusAllS,
+        borderSide: BorderSide(color: kDarkParticlesColor),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: AppRadius.radiusAllS,
+        borderSide: BorderSide(color: kDarkParticlesColor),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: AppRadius.radiusAllS,
+        borderSide: BorderSide(color: kDarkParticlesColor),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: AppRadius.radiusAllS,
+        borderSide: const BorderSide(color: Colors.red),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: AppRadius.radiusAllS,
+        borderSide: const BorderSide(color: Colors.red),
+      ),
+      disabledBorder: OutlineInputBorder(
+        borderRadius: AppRadius.radiusAllS,
+        borderSide: BorderSide(color: kDarkParticlesColor.withBlue(5)),
+      ),
+    );
+  }
+
   Widget _buildFormSubmit(BuildContext context) {
-    return CoreButton(
+    return SafeArea(
+      child: CoreButton(
         text: 'Submit',
         onPressed: () {
-          setState(() {
-            _formSubmitted = true;
-          });
-
+          setState(() => _formSubmitted = true);
           if (_formKey.currentState?.validate() ?? false) {
             GoRouter.of(context).push(RouteName.importantDetails);
           }
-        });
+        },
+      ),
+    );
+  }
+
+  String? _validateRequired(String? value, String fieldName) {
+    if (!UtilValidators.isValidString(value ?? '')) {
+      return 'Please enter $fieldName';
+    }
+    return null;
   }
 }

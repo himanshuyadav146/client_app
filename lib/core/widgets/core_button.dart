@@ -10,6 +10,7 @@ class CoreButton extends StatelessWidget {
   final ShapeBorder? shape;
   final bool isLoading;
   final Widget? icon;
+  final bool isDisabled;
 
   CoreButton({
     required this.text,
@@ -21,6 +22,7 @@ class CoreButton extends StatelessWidget {
     this.shape,
     this.isLoading = false,
     this.icon,
+    this.isDisabled = false,
   });
 
   @override
@@ -30,8 +32,12 @@ class CoreButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          foregroundColor: textColor ?? Colors.white,
-          backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
+          side: isDisabled ? BorderSide(color: Colors.black) : null,
+          foregroundColor:
+              isDisabled ? Colors.black : textColor ?? Colors.white,
+          backgroundColor: isDisabled
+              ? Colors.white
+              : backgroundColor ?? Theme.of(context).primaryColor,
           padding: padding ??
               const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           //  shape: shape ?? ShapeBorder(),

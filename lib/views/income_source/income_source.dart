@@ -21,15 +21,16 @@ class IncomeSourceView extends StatefulWidget {
 class _IncomeSourceViewState extends State<IncomeSourceView> {
   // List of categories for the grid
   final List<Category> _categoryList = [
-    Category.hospitals,
-    Category.clinics,
-    Category.pharmacies,
-    Category.diagnosticCenters,
-    Category.labs,
+    Category.salary,
+    Category.houseProperty,
+    Category.rentalIncome,
+    Category.abroadIncome,
+    Category.businessIncome,
+    Category.otherIncome,
   ];
 
   // State variable to track the selected category
-  Category? _selectedCategory;
+  Set<Category> _selectedCategory = {};
 
   late final IncomeSourceBloc _incomeSourceBloc;
 
@@ -61,21 +62,19 @@ class _IncomeSourceViewState extends State<IncomeSourceView> {
                 child: BlocBuilder<IncomeSourceBloc, IncomeSourceState>(
                   builder: (context, state) {
                     return CustomGridView<Category>(
-                      itemList:
-                          _categoryList, // Category.values, // Enum values as list
-                      selectedItem: _selectedCategory,
-                      onItemSelected: (index) {
-                        final category = _categoryList[index];
-                        final isSelected = _selectedCategory == category;
+                      itemList: _categoryList,
+                      selectedItems: _selectedCategory,
+                      onItemToggle: (category) {
                         setState(() {
-                          _selectedCategory =
-                              isSelected ? null : category; // Toggle selection
+                          if (_selectedCategory.contains(category)) {
+                            _selectedCategory.remove(category); // Deselect
+                          } else {
+                            _selectedCategory.add(category); // Select
+                          }
                         });
                       },
-                      itemLabel: (category) =>
-                          category.name, // Get name of the category
-                      itemIcon: (category) =>
-                          Icon(category.icon), // Get icon for the category
+                      itemLabel: (category) => category.name,
+                      itemIcon: (category) => Icon(category.icon),
                     );
                   },
                 ),

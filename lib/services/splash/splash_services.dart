@@ -11,7 +11,7 @@ class SplashServices {
     SessionController().getUserFromPref().then((value) {
       if (SessionController().isLoggedIn) {
         Timer(const Duration(seconds: 3),
-            () => GoRouter.of(context).go(RouteName.home));
+            () => GoRouter.of(context).go(RouteName.tabbarScreen));
       } else {
         Timer(const Duration(seconds: 3),
             () => GoRouter.of(context).go(RouteName.phoneNo));

@@ -1,4 +1,5 @@
 import 'package:client_app/core/index.dart';
+import 'package:client_app/core/widgets/carousel_widget.dart';
 import 'package:client_app/core/widgets/core_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,42 +17,36 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return CoreScaffold(
-      title: 'Choose Services',
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
+      ),
       body: _buildHomeView(context),
-      isDrawer: false,
-      isResizeToAvoidBottomInset: false,
-      appBarBackgroundColor: Theme.of(context).primaryColor,
-      appBarForegroundColor: Colors.white,
     );
   }
 }
 
 Widget _buildHomeView(BuildContext context) {
+  final List<String> imgList = [
+    'https://www.moneyseth.com/media/blog_headers/itr_filing_for_salary.webp',
+    'https://www.jurishour.in/wp-content/uploads/2025/04/gst-registration-document.webp',
+    'https://www.indiafilings.com/learn/wp-content/uploads/2024/04/How-To-Check-And-Authenticate-Income-Tax-Notice-Online.jpg',
+  ];
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
-      SizedBox(
-        height: 150,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SvgPicture.asset(
-              ICON_CONST.banner,
-              height: 150,
-              fit: BoxFit.fill,
-            ),
-          ],
-        ),
+      CarouselWidget(
+        imgList: imgList,
+        onTap: (p0) {},
       ),
+      Spacer(),
       Padding(
         padding: AppPadding.paddingAllM,
         child: Column(
           children: [
-            SizedBox(
-              height: 10,
-            ),
             SizedBox(
               width: double.infinity,
               child: CoreLevel(
@@ -59,20 +54,25 @@ Widget _buildHomeView(BuildContext context) {
                   text: kFileYourTax,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.w700,
                   )),
             ),
-            SizedBox(
-              height: 10,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: CoreLevel(
+                text: kFileYourTaxSubtitle,
+                textAlign: TextAlign.center,
+              ),
             ),
-            CoreLevel(text: 'Simple Tax * Maximum Saving * Accuracy'),
-            SizedBox(
-              height: 20,
-            ),
-            CoreButton(text: 'Start your tax return', onPressed: () {
-              GoRouter.of(context).push(RouteName.incomeSource);
-            })
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: CoreButton(
+                  text: kFileITR,
+                  onPressed: () {
+                    GoRouter.of(context).push(RouteName.incomeSource);
+                  }),
+            )
           ],
         ),
       )

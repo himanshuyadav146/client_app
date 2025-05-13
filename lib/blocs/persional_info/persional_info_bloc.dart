@@ -1,14 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:client_app/data/models/persional_info/persional_info_model.dart';
 import 'package:equatable/equatable.dart';
-
-import '../../data/models/persional_info/persional_info.dart';
 import '../../domain/repositories/persional_info/persional_info_repository.dart';
-
 part 'persional_info_event.dart';
-
 part 'persional_info_state.dart';
-
-
 
 class PersionalInfoBloc extends Bloc<PersionalInfoEvent, PersionalInfoState>{
   late PersionalInfoRepository persionalInfoRepository;

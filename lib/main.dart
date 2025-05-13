@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
       title: 'Tax App',
       theme: AppTheme.lightTheme,
       routerConfig: AppRouter.router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -38,11 +39,11 @@ void servicesLocator() {
   // Register IncomeSourceBloc as a LazySingleton (better for stateful UI updates)
   getIt.registerLazySingleton<IncomeSourceBloc>(() => IncomeSourceBloc());
   getIt.registerLazySingleton<PersionalInfoModel>(() => PersionalInfoModel(
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      panNumber: '',
-      email: '',
-      dob: '',
-  ));
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        panNumber: '',
+        email: '',
+        dob: '',
+      ));
 }

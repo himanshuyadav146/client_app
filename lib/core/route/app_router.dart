@@ -1,6 +1,7 @@
 import 'package:client_app/core/route/route_name.dart';
 import 'package:client_app/views/documents_upload/documents_upload.dart';
 import 'package:client_app/views/persional_info/persional_info.dart';
+import 'package:client_app/views/tab_bar/tabbar_screen.dart';
 import 'package:flutter/material.dart';
 import '../../views/important_details/inportant_details.dart';
 import '../../views/income_source/income_source.dart';
@@ -15,6 +16,10 @@ class AppRouter {
       GoRoute(
         path: RouteName.splashScreen,
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: RouteName.tabbarScreen,
+        builder: (context, state) => const TabbarScreen(),
       ),
       GoRoute(
         path: RouteName.home,

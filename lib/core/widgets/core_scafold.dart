@@ -43,35 +43,42 @@ class CoreScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor:
+          backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       appBar: isAppBar
           ? AppBar(
-        title: Text(
-          title,
-          style: appBarTitleStyle ?? Theme.of(context).appBarTheme.titleTextStyle,
-        ),
-        actions: actions,
-        backgroundColor: appBarBackgroundColor ?? Theme.of(context).appBarTheme.backgroundColor,
-        foregroundColor: appBarForegroundColor ?? Theme.of(context).appBarTheme.foregroundColor,
-        elevation: appBarElevation ?? Theme.of(context).appBarTheme.elevation,
-        iconTheme: appBarIconTheme ?? Theme.of(context).appBarTheme.iconTheme,
-        centerTitle: centerTitle ?? Theme.of(context).appBarTheme.centerTitle,
-        leading: showBackButton
-            ? IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        )
-            : null,
-      )
+              title: Text(
+                title,
+                style: appBarTitleStyle ??
+                    Theme.of(context).appBarTheme.titleTextStyle,
+              ),
+              actions: actions,
+              backgroundColor: appBarBackgroundColor ??
+                  Theme.of(context).appBarTheme.backgroundColor,
+              foregroundColor: appBarForegroundColor ??
+                  Theme.of(context).appBarTheme.foregroundColor,
+              elevation:
+                  appBarElevation ?? Theme.of(context).appBarTheme.elevation,
+              iconTheme:
+                  appBarIconTheme ?? Theme.of(context).appBarTheme.iconTheme,
+              centerTitle:
+                  centerTitle ?? Theme.of(context).appBarTheme.centerTitle,
+              leading: showBackButton
+                  ? IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  : null,
+            )
           : null,
       resizeToAvoidBottomInset: isResizeToAvoidBottomInset,
       drawer: isDrawer ? (drawer ?? _buildDefaultDrawer(context)) : null,
       body: Column(
         children: [
           Expanded(child: body),
-          footer ?? _buildDefaultFooter(context),
+          // footer ?? _buildDefaultFooter(context),
         ],
       ),
       floatingActionButton: floatingActionButton,

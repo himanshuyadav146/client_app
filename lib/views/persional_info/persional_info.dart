@@ -2,6 +2,7 @@ import 'package:client_app/core/index.dart';
 import 'package:client_app/core/widgets/core_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/utils/validator.dart';
 import '../../core/widgets/core_drop_down.dart';
@@ -52,6 +53,22 @@ class _PersionalInfoState extends State<PersionalInfo> {
         ),
       ),
     );
+  }
+
+  Future<void> _selectDOB(BuildContext context) async {
+    final initialDate = DateTime.now().subtract(const Duration(days: 365 * 18));
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      setState(() {
+        _dob.text = DateFormat('dd/MM/yyyy').format(picked);
+      });
+    }
   }
 
   Widget _buildForm() {
@@ -106,29 +123,32 @@ class _PersionalInfoState extends State<PersionalInfo> {
               controller: _email,
               hintText: 'Enter Email',
               keyboardType: TextInputType.emailAddress,
-              validator: (value) => UtilValidators.isValidEmail(value ?? '')
-                  ? null
-                  : 'Please enter a valid Email',
+              validator: UtilValidators.validateEmail,
             ),
             _formSectionLabel('PAN'),
             _buildTextField(
               controller: _pan,
               hintText: 'Enter PAN',
-              validator: (value) => _validateRequired(value, 'PAN'),
+              validator: UtilValidators.validatePAN,
             ),
             _formSectionLabel('Aadhaar Card Number'),
             _buildTextField(
               controller: _aadhaar,
               hintText: 'Enter Aadhaar Card Number',
-              validator: (value) =>
-                  _validateRequired(value, 'Aadhaar Card Number'),
+              keyboardType: TextInputType.number,
+              validator: UtilValidators.validateAadhaar,
             ),
             _formSectionLabel('Date of Birth'),
-            _buildTextField(
-              controller: _dob,
-              hintText: 'DD/MM/YYYY',
-              keyboardType: TextInputType.datetime,
-              validator: (value) => _validateRequired(value, 'Date of Birth'),
+            GestureDetector(
+              onTap: () => _selectDOB(context),
+              child: AbsorbPointer(
+                child: _buildTextField(
+                  controller: _dob,
+                  hintText: 'DD/MM/YYYY',
+                  keyboardType: TextInputType.datetime,
+                  validator: UtilValidators.validateDOB,
+                ),
+              ),
             ),
           ],
         ),
@@ -205,9 +225,9 @@ class _PersionalInfoState extends State<PersionalInfo> {
         text: 'Submit',
         onPressed: () {
           setState(() => _formSubmitted = true);
-          if (_formKey.currentState?.validate() ?? false) {
-            GoRouter.of(context).push(RouteName.importantDetails);
-          }
+          // if (_formKey.currentState?.validate() ?? false) {
+          GoRouter.of(context).push(RouteName.importantDetails);
+          // }
         },
       ),
     );

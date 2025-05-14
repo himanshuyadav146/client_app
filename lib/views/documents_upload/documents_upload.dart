@@ -42,10 +42,9 @@ class _DocumentsUploadState extends State<DocumentsUpload> {
             ],
           ),
         ),
-       backgroundColor: kDocumentBackgroundColor,
+        backgroundColor: kDocumentBackgroundColor,
         isDrawer: false,
-        isResizeToAvoidBottomInset: false
-    );
+        isResizeToAvoidBottomInset: false);
   }
 
   Widget _documentsUpload() {
@@ -137,16 +136,18 @@ class _DocumentsUploadState extends State<DocumentsUpload> {
   }
 
   Widget _buildFormSubmit(BuildContext context) {
-    return CoreButton(
-        text: 'Upload Documents',
-        onPressed: () {
-          setState(() {
-            _formSubmitted = true;
-          });
+    return SafeArea(
+      child: CoreButton(
+          text: 'Upload Documents',
+          onPressed: () {
+            setState(() {
+              _formSubmitted = true;
+            });
 
-          if (_formKey.currentState?.validate() ?? false) {
-            GoRouter.of(context).push(RouteName.documentsUpload);
-          }
-        });
+            if (_formKey.currentState?.validate() ?? false) {
+              GoRouter.of(context).push(RouteName.documentsUpload);
+            }
+          }),
+    );
   }
 }

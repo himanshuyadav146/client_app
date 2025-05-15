@@ -1,43 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../blocs/auth/login_bloc.dart';
 import '../../core/constant/app_sizes.dart';
 import '../../core/constant/colors.dart';
 import '../../core/constant/icon_constant.dart';
-import '../../core/constant/strings.dart';
 import '../../core/route/route_name.dart';
 import '../../core/utils/enums.dart';
 import '../../core/widgets/core_button.dart';
 import '../../core/widgets/core_scafold.dart';
 import '../../core/widgets/core_text.dart';
 import '../../core/widgets/loader_widget.dart';
-import '../../main.dart';
 
 class OtpVerificationView extends StatefulWidget {
-  const OtpVerificationView({super.key});
+  const OtpVerificationView({super.key, required this.phoneNumber});
+  final String phoneNumber;
 
   @override
   State<OtpVerificationView> createState() => _OtpVerificationViewState();
 }
 
 class _OtpVerificationViewState extends State<OtpVerificationView> {
-  // late final LoginBloc _loginBloc;
   final _formKey = GlobalKey<FormState>();
-  final LoginBloc loginBloc = getIt<LoginBloc>();
-
   final List<TextEditingController> _controllers =
-      List.generate(6, (_) => TextEditingController());
+  List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
-
-  @override
-  void initState() {
-    super.initState();
-    //_loginBloc = LoginBloc(authRepository: getIt());
-  }
 
   @override
   void dispose() {
@@ -50,42 +40,23 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     super.dispose();
   }
 
-  void _onOtpEntered() {
-    String otp = _controllers.map((c) => c.text).join();
-    if (otp.length == 6) {
-      context.read<LoginBloc>().add(PhoneNoChange(phoneNo: otp));
-      GoRouter.of(context).go(RouteName.home);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return CoreScaffold(
       title: 'OTP Verification',
-      body: BlocProvider<LoginBloc>.value(
-        value: loginBloc,
-        child: BlocListener<LoginBloc, LoginState>(
-          listenWhen: (previous, current) =>
-              previous.apiStatus != current.apiStatus,
-          listener: (context, state) {
-            if (state.apiStatus == ApiStatus.success) {
-              // GoRouter.of(context).push(RouteName.home);
-              GoRouter.of(context).go(RouteName.home);
-            } else if (state.apiStatus == ApiStatus.error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.statusMessage)),
-              );
-            }
-          },
-          child: BlocBuilder<LoginBloc, LoginState>(
-            builder: (context, state) {
-              if (state.apiStatus == ApiStatus.loading) {
-                return const Center(child: LoaderWidget());
-              }
-              return _buildOtpForm();
-            },
-          ),
-        ),
+      body: BlocListener<LoginBloc, LoginState>(
+        listenWhen: (previous, current) =>
+        previous.apiStatus != current.apiStatus,
+        listener: (context, state) {
+          if (state.apiStatus == ApiStatus.success) {
+            GoRouter.of(context).go(RouteName.home);
+          } else if (state.apiStatus == ApiStatus.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.statusMessage)),
+            );
+          }
+        },
+        child: _buildOtpForm(),
       ),
       isDrawer: false,
       isResizeToAvoidBottomInset: false,
@@ -95,36 +66,43 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
   Widget _buildOtpForm() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 100),
-          Center(
-            child: SvgPicture.asset(ICON_CONST.verify, width: 330, height: 250),
-          ),
-          const SizedBox(height: AppSizes.textSizeXL),
-          CoreLevel(
-            textAlign: TextAlign.center,
-            text: kVerifyPhone,
-            style: const TextStyle(
-              fontSize: AppSizes.textSize22,
-              fontWeight: FontWeight.bold,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 100),
+            Center(
+              child: SvgPicture.asset(
+                ICON_CONST.verify,
+                width: 330,
+                height: 250,
+              ),
             ),
-          ),
-          const SizedBox(height: AppSizes.textSizeXL),
-          CoreLevel(
-            textAlign: TextAlign.center,
-            text: kSentOTPText,
-            style: const TextStyle(
-              fontSize: AppSizes.textSizeL,
-              fontWeight: FontWeight.normal,
+            const SizedBox(height: AppSizes.textSizeXL),
+            CoreLevel(
+              textAlign: TextAlign.center,
+              text: 'Verify OTP',
+              style: const TextStyle(
+                fontSize: AppSizes.textSize22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: AppSizes.textSizeXL),
-          _buildOTPField(),
-          const SizedBox(height: 20),
-          _buildVerifyButton(),
-        ],
+            const SizedBox(height: AppSizes.textSizeXL),
+            CoreLevel(
+              textAlign: TextAlign.center,
+              text: 'Enter the 6-digit OTP sent to ${widget.phoneNumber}',
+              style: const TextStyle(
+                fontSize: AppSizes.textSizeL,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            const SizedBox(height: AppSizes.textSizeXL),
+            _buildOTPField(),
+            const SizedBox(height: 20),
+            _buildVerifyButton(),
+          ],
+        ),
       ),
     );
   }
@@ -177,7 +155,6 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     if (value.isNotEmpty && index < 5) {
                       _focusNodes[index + 1].requestFocus();
                     }
-                    _onOtpEntered();
                   },
                 ),
               ),
@@ -190,7 +167,6 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
 
   Widget _buildVerifyButton() {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.apiStatus != current.apiStatus,
       builder: (context, state) {
         return CoreButton(
           isLoading: state.apiStatus == ApiStatus.loading,
@@ -200,6 +176,12 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
             if (otp.length == 6) {
               context.read<LoginBloc>().add(OTPChange(otp: otp));
               context.read<LoginBloc>().add(VerifyOTP());
+              // context.read<LoginBloc>().add(
+              //   VerifyOTP(
+              //     phoneNumber: widget.phoneNumber,
+              //     otp: otp,
+              //   ),
+              // );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Enter all 6 digits")),

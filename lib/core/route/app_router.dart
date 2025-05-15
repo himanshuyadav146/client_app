@@ -27,11 +27,14 @@ class AppRouter {
       ),
       GoRoute(
         path: RouteName.phoneNo,
-        builder: (context, state) => const PhoneNoView(),
+        builder: (context, state) => const PhoneNumberView(),
       ),
       GoRoute(
         path: RouteName.otpVerification,
-        builder: (context, state) => const OtpVerificationView(),
+        builder: (context, state) {
+          final phoneNumber = state.extra as String? ?? '';
+          return OtpVerificationView(phoneNumber: phoneNumber);
+        },
       ),
       GoRoute(
         path: RouteName.incomeSource,

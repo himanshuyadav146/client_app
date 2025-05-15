@@ -58,8 +58,7 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
 
   Future<void> _onVerifyOTP(VerifyOTP event, Emitter<LoginState> emit) async {
     final Map<String, dynamic> data = {
-      // "mobile": state.phoneNo,
-      "mobile": '9096464534',
+      "mobile": state.phoneNo,
       "otp": state.otp
     };
     emit(

@@ -88,7 +88,7 @@ class ProfileScreen extends StatelessWidget {
                 // Logout and go back to login screen
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => PhoneNoView()),
+                  MaterialPageRoute(builder: (context) => PhoneNumberView()),
                 );
               },
               leadingIcon: const Icon(Icons.exit_to_app, color: Colors.red),

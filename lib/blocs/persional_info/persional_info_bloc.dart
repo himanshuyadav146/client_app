@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../data/models/persional_info/persional_info.dart';
+import '../../data/models/persional_info/persional_info_model.dart';
 import '../../domain/repositories/persional_info/persional_info_repository.dart';
 
 part 'persional_info_event.dart';

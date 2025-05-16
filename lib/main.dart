@@ -7,7 +7,9 @@ import 'package:provider/provider.dart';
 
 import 'blocs/auth/login_bloc.dart';
 import 'blocs/income_source/income_source_bloc.dart';
+import 'blocs/persional_info/persional_info_bloc.dart';
 import 'core/di/di_config.dart';
+import 'domain/repositories/persional_info/persional_info_repository.dart';
 
 GetIt getIt = GetIt.instance;
 
@@ -23,12 +25,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // Provide BLoCs
+        // Provide BLoCs using getIt for consistency
         BlocProvider<LoginBloc>(
           create: (context) => getIt<LoginBloc>(),
         ),
         BlocProvider<IncomeSourceBloc>(
           create: (context) => getIt<IncomeSourceBloc>(),
+        ),
+        BlocProvider<PersionalInfoBloc>(
+          create: (context) => getIt<PersionalInfoBloc>(),
         ),
       ],
       child: MaterialApp.router(

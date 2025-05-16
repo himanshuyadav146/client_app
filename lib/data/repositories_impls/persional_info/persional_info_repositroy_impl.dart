@@ -3,6 +3,7 @@
 import '../../../config/app_urls.dart';
 import '../../../domain/repositories/persional_info/persional_info_repository.dart';
 import '../../models/persional_info/persional_info_model.dart';
+import '../../models/persional_info/persional_info_response.dart';
 import '../../network/network_service_api.dart';
 
 class PersionalInfoRepositoryImpl implements PersionalInfoRepository {
@@ -15,9 +16,9 @@ class PersionalInfoRepositoryImpl implements PersionalInfoRepository {
   }
 
   @override
-  Future<PersionalInfoModel> submitPersionalInfo(
+  Future<PersionalInfoResponse> submitPersionalInfo(
       PersionalInfoModel persionalInfoModel) async {
     final res = await _api.getApi(baseUrl + sendOTPUrl);
-    return PersionalInfoModel.fromJson(res);
+    return PersionalInfoResponse.fromJson(res);
   }
 }

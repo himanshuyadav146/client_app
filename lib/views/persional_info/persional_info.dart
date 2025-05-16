@@ -1,9 +1,12 @@
 import 'package:client_app/core/index.dart';
 import 'package:client_app/core/widgets/core_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../blocs/income_source/income_source_bloc.dart';
+import '../../blocs/persional_info/persional_info_bloc.dart';
 import '../../core/utils/validator.dart';
 import '../../core/widgets/core_drop_down.dart';
 import '../../core/widgets/core_text_form_field.dart';
@@ -27,29 +30,48 @@ class _PersionalInfoState extends State<PersionalInfo> {
   final _aadhaar = TextEditingController();
 
   bool _formSubmitted = false;
+  bool _isLoading = false;
 
   String? _selectedFinancialYear;
 
   @override
   Widget build(BuildContext context) {
-    return CoreScaffold(
-      title: 'Personal Information',
-      appBarBackgroundColor: Theme.of(context).primaryColor,
-      appBarForegroundColor: Colors.white,
-      showBackButton: true,
-      isDrawer: false,
-      isResizeToAvoidBottomInset: true,
-      onBackButtonPressed: () {
-        Navigator.of(context).pop();
+    // final incomeSourceBloc = context.read<IncomeSourceBloc>();
+    final persionalInfoBloc = context.read<PersionalInfoBloc>();
+
+    return BlocListener<PersionalInfoBloc, PersionalInfoState>(
+      listener: (BuildContext context, PersionalInfoState state) {
+        if (state is PersionalInfoLoading) {
+          setState(() => _isLoading = true);
+        } else if (state is PersionalInfoSubmissionSuccess) {
+          setState(() => _isLoading = false);
+          GoRouter.of(context).push(RouteName.importantDetails);
+        } else if (state is PersionalInfoSubmissionFailure) {
+          setState(() => _isLoading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error)),
+          );
+        }
       },
-      body: Padding(
-        padding: AppPadding.paddingAllM,
-        child: Column(
-          children: [
-            Expanded(child: _buildForm()),
-            const SizedBox(height: AppSizes.paddingM),
-            _buildFormSubmit(context),
-          ],
+      child: CoreScaffold(
+        title: 'Personal Information',
+        appBarBackgroundColor: Theme.of(context).primaryColor,
+        appBarForegroundColor: Colors.white,
+        showBackButton: true,
+        isDrawer: false,
+        isResizeToAvoidBottomInset: true,
+        onBackButtonPressed: () {
+          Navigator.of(context).pop();
+        },
+        body: Padding(
+          padding: AppPadding.paddingAllM,
+          child: Column(
+            children: [
+              Expanded(child: _buildForm()),
+              const SizedBox(height: AppSizes.paddingM),
+              _buildFormSubmit(context),
+            ],
+          ),
         ),
       ),
     );

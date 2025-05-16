@@ -1,44 +1,23 @@
-
 part of 'persional_info_bloc.dart';
 
-
-class PersionalInfoState extends Equatable {
+abstract class PersionalInfoState extends Equatable {
   const PersionalInfoState();
 
   @override
   List<Object> get props => [];
-
 }
 
 class PersionalInfoFormInitial extends PersionalInfoState {}
 
-class PersionalInfoFormLoading extends PersionalInfoState {}
+class PersionalInfoLoading extends PersionalInfoState {}
 
-class PersionalInfoFormLoaded extends PersionalInfoState {
-  final PersionalInfoModel persionalInfoModel;
+class PersionalInfoSubmissionSuccess extends PersionalInfoState {}
 
-  const PersionalInfoFormLoaded(this.persionalInfoModel);
+class PersionalInfoSubmissionFailure extends PersionalInfoState {
+  final String error;
 
-  @override
-  List<Object> get props => [persionalInfoModel];
-}
-
-class PersionalInfoFormError extends PersionalInfoState {
-  final String message;
-
-  const PersionalInfoFormError(this.message);
+  const PersionalInfoSubmissionFailure(this.error);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [error];
 }
-
-class PersionalInfoFormSuccess extends PersionalInfoState {
-  final PersionalInfoModel persionalInfoModel;
-
-  const PersionalInfoFormSuccess(this.persionalInfoModel);
-
-  @override
-  List<Object> get props => [persionalInfoModel];
-}
-
-

@@ -28,7 +28,7 @@ class CustomGridView<T> extends StatelessWidget {
       itemCount: itemList.length,
       itemBuilder: (context, index) {
         final item = itemList[index];
-        final isSelected = selectedItems.contains(item);
+        final isSelected = selectedItems.any((selected) => selected == item);
 
         return GestureDetector(
           onTap: () => onItemToggle(item), // Toggle item selection

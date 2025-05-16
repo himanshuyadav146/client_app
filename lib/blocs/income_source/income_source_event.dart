@@ -1,6 +1,10 @@
+part of 'income_source_bloc.dart';
+
 abstract class IncomeSourceEvent {}
 
-class ToggleItem extends IncomeSourceEvent {
-  final int index;
-  ToggleItem(this.index);
+class LoadIncomeSourcesEvent extends IncomeSourceEvent {}
+
+class UpdateSelectionEvent extends IncomeSourceEvent {
+  final Set<Data> selectedCategories;
+  UpdateSelectionEvent(this.selectedCategories);
 }

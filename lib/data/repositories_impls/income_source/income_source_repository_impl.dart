@@ -1,0 +1,69 @@
+import 'dart:convert';
+
+import 'package:client_app/core/utils/enums.dart';
+import 'package:client_app/data/models/income_source/sources.dart';
+
+import '../../../domain/repositories/income_source/income_source_repository.dart';
+import '../../network/network_service_api.dart';
+
+class IncomeSourceRepositoryImpl implements IncomeSourceRepository {
+  final _api = NetworkServiceApi();
+  final String baseUrl = 'your_api_base_url';
+  final String incomeSourcesPath = 'income-sources';
+
+  @override
+  Future<Sources> getIncomeSources() async {
+   // final res = await _api.getApi(baseUrl);
+    //return Sources.fromJson(res);
+    return Sources.fromJson(jsonDecode(dummyResponse));
+  }
+
+  @override
+  Future<void> updateIncomeSources(Set<Data> selectedCategories) async {
+
+  }
+}
+
+final dummyResponse = '''
+{
+  "status": "success",
+  "data": [
+    {
+      "Id": "1",
+      "Name": "Salary\/Pension",
+      "CreatedAt": "2025-03-12 14:09:24",
+      "UpdatedAt": "0000-00-00 00:00:00"
+    },
+    {
+      "Id": "2",
+      "Name": "House Property",
+      "CreatedAt": "2025-03-12 14:23:04",
+      "UpdatedAt": "0000-00-00 00:00:00"
+    },
+    {
+      "Id": "3",
+      "Name": "Business\/Proffession",
+      "CreatedAt": "2025-03-12 18:18:00",
+      "UpdatedAt": "0000-00-00 00:00:00"
+    },
+    {
+      "Id": "4",
+      "Name": "Capital Gains",
+      "CreatedAt": "2025-03-12 18:39:49",
+      "UpdatedAt": "0000-00-00 00:00:00"
+    },
+    {
+      "Id": "5",
+      "Name": "Other Sources",
+      "CreatedAt": "2025-03-12 18:40:10",
+      "UpdatedAt": "0000-00-00 00:00:00"
+    },
+    {
+      "Id": "6",
+      "Name": "Foreign Income",
+      "CreatedAt": "2025-03-12 18:40:55",
+      "UpdatedAt": "0000-00-00 00:00:00"
+    }
+  ]
+}
+''';

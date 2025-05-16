@@ -1,9 +1,23 @@
-class IncomeSourceState {
-  final List<bool> selectedItems;
+part of 'income_source_bloc.dart';
 
-  IncomeSourceState({required this.selectedItems});
+abstract class IncomeSourceState {}
 
-  IncomeSourceState copyWith({List<bool>? selectedItems}) {
-    return IncomeSourceState(selectedItems: selectedItems ?? this.selectedItems);
-  }
+class IncomeSourceInitialState extends IncomeSourceState {}
+
+class IncomeSourceLoadingState extends IncomeSourceState {}
+
+class IncomeSourceLoadedState extends IncomeSourceState {
+  final Sources sources;
+  final Set<Data> selectedCategories;
+
+  IncomeSourceLoadedState({
+    required this.sources,
+    this.selectedCategories = const {},
+  });
+}
+
+class IncomeSourceErrorState extends IncomeSourceState {
+  final String message;
+
+  IncomeSourceErrorState(this.message);
 }

@@ -1,7 +1,5 @@
 import 'package:client_app/core/index.dart';
 import 'package:client_app/core/theme/app_theme.dart';
-import 'package:client_app/data/repositories_impls/auth/auth_repository_impl.dart';
-import 'package:client_app/domain/repositories/auth/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -9,12 +7,12 @@ import 'package:provider/provider.dart';
 
 import 'blocs/auth/login_bloc.dart';
 import 'blocs/income_source/income_source_bloc.dart';
-import 'data/models/persional_info/persional_info_model.dart';
+import 'core/di/di_config.dart';
 
 GetIt getIt = GetIt.instance;
 
-void main() {
-  servicesLocator();
+void main() async{
+  await configureDependencies();
   runApp(const MyApp());
 }
 
@@ -32,11 +30,6 @@ class MyApp extends StatelessWidget {
         BlocProvider<IncomeSourceBloc>(
           create: (context) => getIt<IncomeSourceBloc>(),
         ),
-
-        // Provide models
-        // ChangeNotifierProvider<PersionalInfoModel>(
-        //   create: (context) => getIt<PersionalInfoModel>(),
-        // ),
       ],
       child: MaterialApp.router(
         title: 'Tax App',
@@ -46,20 +39,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-}
-
-void servicesLocator() {
-  getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
-  getIt.registerFactory<LoginBloc>(
-          () => LoginBloc(authRepository: getIt<AuthRepository>()));
-
-  getIt.registerLazySingleton<IncomeSourceBloc>(() => IncomeSourceBloc());
-  getIt.registerLazySingleton<PersionalInfoModel>(() => PersionalInfoModel(
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    panNumber: '',
-    email: '',
-    dob: '',
-  ));
 }

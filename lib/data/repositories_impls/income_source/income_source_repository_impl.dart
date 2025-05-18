@@ -1,21 +1,19 @@
 import 'dart:convert';
 
-import 'package:client_app/core/utils/enums.dart';
 import 'package:client_app/data/models/income_source/sources.dart';
 
+import '../../../config/app_urls.dart';
 import '../../../domain/repositories/income_source/income_source_repository.dart';
 import '../../network/network_service_api.dart';
 
 class IncomeSourceRepositoryImpl implements IncomeSourceRepository {
   final _api = NetworkServiceApi();
-  final String baseUrl = 'your_api_base_url';
-  final String incomeSourcesPath = 'income-sources';
 
   @override
   Future<Sources> getIncomeSources() async {
-   // final res = await _api.getApi(baseUrl);
-    //return Sources.fromJson(res);
-    return Sources.fromJson(jsonDecode(dummyResponse));
+   final res = await _api.getApi(baseUrl + getIncomeSource );
+    return Sources.fromJson(res);
+    // return Sources.fromJson(jsonDecode(dummyResponse));
   }
 
   @override

@@ -68,7 +68,7 @@ class LoginBloc extends Bloc<LoginEvents, LoginState> {
     );
     await authRepository.otpVerify(data).then((onValue) async {
       if (onValue.status == 'success') {
-        await SessionController().saveUserInPref(jsonEncode(onValue));
+        await SessionController().saveUserSession(onValue);
         emit(state.copyWith(
             statusMessage: 'Success', apiStatus: ApiStatus.success));
         return;

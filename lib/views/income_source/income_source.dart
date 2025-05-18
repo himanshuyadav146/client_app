@@ -17,15 +17,6 @@ class IncomeSourceView extends StatefulWidget {
 }
 
 class _IncomeSourceViewState extends State<IncomeSourceView> {
-  // List of categories for the grid
-  final List<Category> _categoryList = [
-    Category.salary,
-    Category.houseProperty,
-    Category.rentalIncome,
-    Category.abroadIncome,
-    Category.businessIncome,
-    Category.otherIncome,
-  ];
 
   // State variable to track the selected category
   Set<Data> _selectedCategory = {};
@@ -61,12 +52,12 @@ class _IncomeSourceViewState extends State<IncomeSourceView> {
           appBarBackgroundColor: Theme.of(context).primaryColor,
           appBarForegroundColor: Colors.white,
           showBackButton: true,
-          body: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              children: [
-                Expanded(
-                  child: BlocBuilder<IncomeSourceBloc, IncomeSourceState>(
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                children: [
+                  BlocBuilder<IncomeSourceBloc, IncomeSourceState>(
                     builder: (context, state) {
                       if (state is IncomeSourceLoadingState ||
                           state is IncomeSourceInitialState) {
@@ -118,32 +109,32 @@ class _IncomeSourceViewState extends State<IncomeSourceView> {
                       return const SizedBox();
                     },
                   ),
-                ),
-                SafeArea(
-                  minimum: const EdgeInsets.all(16.0),
-                  child: BlocBuilder<IncomeSourceBloc, IncomeSourceState>(
-                    builder: (context, state) {
-                      final isEnabled = state is IncomeSourceLoadedState &&
-                          state.selectedCategories.isNotEmpty;
-
-                      return SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: CoreButton(
-                          text: 'Continue',
-                          isDisabled: !isEnabled,
-                          onPressed: isEnabled ? () {
-                            if (state is IncomeSourceLoadedState) {
-                              debugPrint('Selected categories: ${state.selectedCategories.length}');
-                            }
-                            GoRouter.of(context).push(RouteName.persionalInfo);
-                          } : () {},
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
+                  SafeArea(
+                    minimum: const EdgeInsets.all(16.0),
+                    child: BlocBuilder<IncomeSourceBloc, IncomeSourceState>(
+                      builder: (context, state) {
+                        final isEnabled = state is IncomeSourceLoadedState &&
+                            state.selectedCategories.isNotEmpty;
+            
+                        return SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: CoreButton(
+                            text: 'Continue',
+                            isDisabled: !isEnabled,
+                            onPressed: isEnabled ? () {
+                              if (state is IncomeSourceLoadedState) {
+                                debugPrint('Selected categories: ${state.selectedCategories.length}');
+                              }
+                              GoRouter.of(context).push(RouteName.persionalInfo);
+                            } : () {},
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           title: 'Choose Services',

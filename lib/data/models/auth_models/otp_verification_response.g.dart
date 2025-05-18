@@ -16,6 +16,7 @@ OTPVerificationResponse _$OTPVerificationResponseFromJson(
           : Data.fromJson(json['data'] as Map<String, dynamic>),
       otp: json['otp'] as String?,
       mobile: json['mobile'] as String?,
+      token: json['token'] as String?,
     );
 
 Map<String, dynamic> _$OTPVerificationResponseToJson(
@@ -25,6 +26,7 @@ Map<String, dynamic> _$OTPVerificationResponseToJson(
       'mobile': instance.mobile,
       'otp': instance.otp,
       'message': instance.message,
+      'token': instance.token,
       'data': instance.data,
     };
 

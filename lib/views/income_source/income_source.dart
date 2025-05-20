@@ -1,5 +1,4 @@
 import 'package:client_app/core/index.dart';
-import 'package:client_app/core/utils/enums.dart';
 import 'package:client_app/core/widgets/custom_grid_widget.dart';
 import 'package:client_app/data/models/income_source/sources.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ class IncomeSourceView extends StatefulWidget {
 class _IncomeSourceViewState extends State<IncomeSourceView> {
 
   // State variable to track the selected category
-  Set<Data> _selectedCategory = {};
+  Set<IncomeSource> _selectedCategory = {};
 
   late final IncomeSourceBloc _incomeSourceBloc;
 
@@ -27,7 +26,9 @@ class _IncomeSourceViewState extends State<IncomeSourceView> {
   void initState() {
     super.initState();
     _incomeSourceBloc = getIt<IncomeSourceBloc>();
-    _incomeSourceBloc.add(LoadIncomeSourcesEvent());
+    if (_incomeSourceBloc.state is! IncomeSourceLoadedState) {
+      _incomeSourceBloc.add(LoadIncomeSourcesEvent());
+    }
   }
 
   @override
@@ -68,15 +69,15 @@ class _IncomeSourceViewState extends State<IncomeSourceView> {
                         return Center(child: Text(state.message));
                       }
                       if (state is IncomeSourceLoadedState) {
-                        final list = state.sources.data ?? [];
-                        return CustomGridView<Data>(
+                        final list = state.sources ?? [];
+                        return CustomGridView<IncomeSource>(
                           itemList: list,
-                          selectedItems: state.selectedCategories,
+                          selectedItems: state.selectedCategories.toSet(),
                           onItemToggle: (category) {
-                            final newSelection = Set<Data>.from(state.selectedCategories);
+                            final newSelection = Set<IncomeSource>.from(state.selectedCategories);
                             final existingItem = newSelection.firstWhere(
                                   (item) => item.id == category.id,
-                              orElse: () => Data(),
+                              orElse: () => IncomeSource(),
                             );
 
                             if (existingItem.id != null) {
@@ -86,7 +87,7 @@ class _IncomeSourceViewState extends State<IncomeSourceView> {
                             }
 
                             context.read<IncomeSourceBloc>().add(
-                              UpdateSelectionEvent(newSelection),
+                              UpdateSelectionEvent(newSelection.toList()),
                             );
                           },
                           itemLabel: (source) => source.name ?? '',
@@ -115,7 +116,7 @@ class _IncomeSourceViewState extends State<IncomeSourceView> {
                       builder: (context, state) {
                         final isEnabled = state is IncomeSourceLoadedState &&
                             state.selectedCategories.isNotEmpty;
-            
+
                         return SizedBox(
                           width: double.infinity,
                           height: 50,

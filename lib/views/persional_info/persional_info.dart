@@ -10,6 +10,7 @@ import '../../blocs/persional_info/persional_info_bloc.dart';
 import '../../core/utils/validator.dart';
 import '../../core/widgets/core_drop_down.dart';
 import '../../core/widgets/core_text_form_field.dart';
+import '../../data/models/persional_info/persional_info_model.dart';
 
 class PersionalInfo extends StatefulWidget {
   const PersionalInfo({super.key});
@@ -33,6 +34,18 @@ class _PersionalInfoState extends State<PersionalInfo> {
   bool _isLoading = false;
 
   String? _selectedFinancialYear;
+
+  @override
+  void dispose() {
+    _firstName.dispose();
+    _middleName.dispose();
+    _lastName.dispose();
+    _email.dispose();
+    _dob.dispose();
+    _pan.dispose();
+    _aadhaar.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -245,14 +258,33 @@ class _PersionalInfoState extends State<PersionalInfo> {
     return SafeArea(
       child: CoreButton(
         text: 'Submit',
-        onPressed: () {
+        onPressed:() {
           setState(() => _formSubmitted = true);
-          // if (_formKey.currentState?.validate() ?? false) {
-          GoRouter.of(context).push(RouteName.importantDetails);
-          // }
-        },
+          if (_formKey.currentState?.validate() ?? false) {
+            _submitForm(context);
+          }
+        }
       ),
     );
+  }
+
+
+  void _submitForm(BuildContext context) {
+    final persionalInfoBloc = context.read<PersionalInfoBloc>();
+
+    final persionalInfoModel = PersionalInfoModel(
+      financialYear: _selectedFinancialYear ?? '',
+      firstName: _firstName.text.trim(),
+      middleName: _middleName.text.trim(),
+      lastName: _lastName.text.trim(),
+      email: _email.text.trim(),
+      dob: _dob.text.trim(),
+      pan: _pan.text.trim(),
+      aadhaar: _aadhaar.text.trim(),
+      source: []
+    );
+
+    persionalInfoBloc.add(PersionalInfoSubmit(persionalInfoModel: persionalInfoModel));
   }
 
   String? _validateRequired(String? value, String fieldName) {

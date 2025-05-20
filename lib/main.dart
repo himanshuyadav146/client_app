@@ -1,5 +1,6 @@
 import 'package:client_app/core/index.dart';
 import 'package:client_app/core/theme/app_theme.dart';
+import 'package:client_app/services/session_manager/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -13,7 +14,9 @@ import 'core/di/di_config.dart';
 GetIt getIt = GetIt.instance;
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
+  await SessionController().initialize();
   runApp(const MyApp());
 }
 

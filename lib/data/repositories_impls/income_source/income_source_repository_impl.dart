@@ -17,7 +17,7 @@ class IncomeSourceRepositoryImpl implements IncomeSourceRepository {
   }
 
   @override
-  Future<void> updateIncomeSources(Set<Data> selectedCategories) async {
+  Future<void> updateIncomeSources(Set<IncomeSource> selectedCategories) async {
 
   }
 }

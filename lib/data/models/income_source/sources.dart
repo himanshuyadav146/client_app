@@ -5,7 +5,8 @@ part 'sources.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Sources {
   String? status;
-  List<Data>? data;
+  @JsonKey(name: 'data')
+  List<IncomeSource>? data;
 
   Sources({this.status, this.data});
 
@@ -15,7 +16,7 @@ class Sources {
 }
 
 @JsonSerializable(explicitToJson: true)
-class Data {
+class IncomeSource {
   @JsonKey(name: 'Id')
   String? id;
   @JsonKey(name: 'Name')
@@ -25,16 +26,16 @@ class Data {
   @JsonKey(name: 'UpdatedAt')
   String? updatedAt;
 
-  Data({this.id, this.name, this.createdAt, this.updatedAt});
+  IncomeSource({this.id, this.name, this.createdAt, this.updatedAt});
 
-  factory Data.fromJson(Map<String, dynamic> json) =>
-      _$DataFromJson(json);
-  Map<String, dynamic> toJson() => _$DataToJson(this);
+  factory IncomeSource.fromJson(Map<String, dynamic> json) =>
+      _$IncomeSourceFromJson(json);
+  Map<String, dynamic> toJson() => _$IncomeSourceToJson(this);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Data && runtimeType == other.runtimeType && id == other.id;
+          other is IncomeSource && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;

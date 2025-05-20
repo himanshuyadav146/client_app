@@ -21,7 +21,9 @@ class IncomeSourceBloc extends Bloc<IncomeSourceEvent, IncomeSourceState> {
     emit(IncomeSourceLoadingState());
     try {
       final sources = await repository.getIncomeSources();
-      emit(IncomeSourceLoadedState(sources: sources));
+      emit(IncomeSourceLoadedState(
+        sources: sources.data ?? [],
+      ));
     } catch (e) {
       emit(IncomeSourceErrorState('Failed to load income sources: $e'));
     }
@@ -33,8 +35,7 @@ class IncomeSourceBloc extends Bloc<IncomeSourceEvent, IncomeSourceState> {
       ) async {
     if (state is IncomeSourceLoadedState) {
       final currentState = state as IncomeSourceLoadedState;
-      emit(IncomeSourceLoadedState(
-        sources: currentState.sources,
+      emit(currentState.copyWith(
         selectedCategories: event.selectedCategories,
       ));
     }

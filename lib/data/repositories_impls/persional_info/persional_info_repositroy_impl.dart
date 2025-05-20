@@ -11,14 +11,14 @@ class PersionalInfoRepositoryImpl implements PersionalInfoRepository {
 
   @override
   Future<PersionalInfoModel> getPersionalInfo(data) async {
-    final res = await _api.getApi(baseUrl + sendOTPUrl);
+    final res = await _api.getApi(baseUrl + getIncomeSource);
     return PersionalInfoModel.fromJson(res);
   }
 
   @override
   Future<PersionalInfoResponse> submitPersionalInfo(
       PersionalInfoModel persionalInfoModel) async {
-    final res = await _api.getApi(baseUrl + sendOTPUrl);
+    final res = await _api.postApi(baseUrl + saveIncomeSource, persionalInfoModel.toJson());
     return PersionalInfoResponse.fromJson(res);
   }
 }

@@ -64,6 +64,30 @@ class SessionController {
     }
   }
 
+  Future<void> saveITRID(String itrId) async {
+    try {
+      await _localStorage.setValues('itr_id', itrId);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<String?> getITRID() async {
+    try {
+      return await _localStorage.getValues('itr_id');
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  String? getUserId() {
+    if (hasValidToken && authResponse != null) {
+      return authResponse!.data?.id;
+    }
+    return null;
+  }
+
   // Clear session on logout
   Future<void> clearSession() async {
     try {

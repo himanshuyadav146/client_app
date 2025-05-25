@@ -21,14 +21,10 @@ Map<String, dynamic> _$SourcesToJson(Sources instance) => <String, dynamic>{
 IncomeSource _$IncomeSourceFromJson(Map<String, dynamic> json) => IncomeSource(
       id: json['Id'] as String?,
       name: json['Name'] as String?,
-      createdAt: json['CreatedAt'] as String?,
-      updatedAt: json['UpdatedAt'] as String?,
     );
 
 Map<String, dynamic> _$IncomeSourceToJson(IncomeSource instance) =>
     <String, dynamic>{
-      'Id': instance.id,
-      'Name': instance.name,
-      'CreatedAt': instance.createdAt,
-      'UpdatedAt': instance.updatedAt,
+      if (instance.id case final value?) 'Id': value,
+      if (instance.name case final value?) 'Name': value,
     };

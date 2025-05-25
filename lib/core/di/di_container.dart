@@ -1,4 +1,5 @@
 import 'package:client_app/core/di/repositories.dart';
+import 'package:client_app/core/di/session_manager_di.dart';
 import 'package:get_it/get_it.dart';
 
 import 'blocs.dart';
@@ -11,6 +12,7 @@ class DIContainer {
     await _registerRepositories();
     await _registerBlocs();
     await _registerModels();
+    await _registerSessionManager();
   }
 
   static Future<void> _registerRepositories() async {
@@ -23,5 +25,9 @@ class DIContainer {
 
   static Future<void> _registerModels() async {
     await registerModels();
+  }
+
+  static Future<void> _registerSessionManager() async {
+    await registerSessionManager();
   }
 }

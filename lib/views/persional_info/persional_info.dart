@@ -11,6 +11,7 @@ import '../../core/utils/validator.dart';
 import '../../core/widgets/core_drop_down.dart';
 import '../../core/widgets/core_text_form_field.dart';
 import '../../data/models/persional_info/persional_info_model.dart';
+import '../../services/session_manager/session_manager.dart';
 
 class PersionalInfo extends StatefulWidget {
   const PersionalInfo({super.key});
@@ -29,6 +30,7 @@ class _PersionalInfoState extends State<PersionalInfo> {
   final _dob = TextEditingController();
   final _pan = TextEditingController();
   final _aadhaar = TextEditingController();
+  final _mobile = TextEditingController();
 
   bool _formSubmitted = false;
   bool _isLoading = false;
@@ -44,6 +46,7 @@ class _PersionalInfoState extends State<PersionalInfo> {
     _dob.dispose();
     _pan.dispose();
     _aadhaar.dispose();
+    _mobile.dispose();
     super.dispose();
   }
 
@@ -152,6 +155,16 @@ class _PersionalInfoState extends State<PersionalInfo> {
               controller: _lastName,
               hintText: 'Enter Last Name',
               validator: (value) => _validateRequired(value, 'Last Name'),
+            ),
+            _formSectionLabel('Phone No'),
+            _buildTextField(
+              controller: _mobile,
+              hintText: 'Enter Phone No',
+              keyboardType: TextInputType.number,
+              validator: (value) =>
+              UtilValidators.isVietnamesePhoneNumber(value ?? '')
+                  ? 'Please enter a valid phone number'
+                  : null,
             ),
             _formSectionLabel('Email'),
             _buildTextField(
@@ -271,6 +284,7 @@ class _PersionalInfoState extends State<PersionalInfo> {
 
   void _submitForm(BuildContext context) {
     final persionalInfoBloc = context.read<PersionalInfoBloc>();
+    final incomeSources = persionalInfoBloc.getSelectedIncomeSource();
 
     final persionalInfoModel = PersionalInfoModel(
       financialYear: _selectedFinancialYear ?? '',
@@ -278,10 +292,12 @@ class _PersionalInfoState extends State<PersionalInfo> {
       middleName: _middleName.text.trim(),
       lastName: _lastName.text.trim(),
       email: _email.text.trim(),
-      dob: _dob.text.trim(),
-      pan: _pan.text.trim(),
-      aadhaar: _aadhaar.text.trim(),
-      source: []
+      userId: SessionController().getUserId(),
+      itrId: '',
+      mobile: _mobile.text.trim(),
+      panNumber: _pan.text.trim(),
+      dateOfBirth: _dob.text.trim(),
+      source: incomeSources,
     );
 
     persionalInfoBloc.add(PersionalInfoSubmit(persionalInfoModel: persionalInfoModel));

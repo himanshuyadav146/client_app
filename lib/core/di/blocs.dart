@@ -12,9 +12,6 @@ Future<void> registerBlocs() async {
         () => LoginBloc(authRepository: getIt<AuthRepository>()),
   );
 
-  // getIt.registerFactory<IncomeSourceBloc>(
-  //       () => IncomeSourceBloc(getIt<IncomeSourceRepository>()),
-  // );
   getIt.registerSingleton<IncomeSourceBloc>(IncomeSourceBloc(getIt<IncomeSourceRepository>()));
 
   getIt.registerFactory<PersionalInfoBloc>(

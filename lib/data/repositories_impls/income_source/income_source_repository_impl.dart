@@ -13,13 +13,29 @@ class IncomeSourceRepositoryImpl implements IncomeSourceRepository {
   Future<Sources> getIncomeSources() async {
    final res = await _api.getApi(baseUrl + getIncomeSource );
     return Sources.fromJson(res);
-    // return Sources.fromJson(jsonDecode(dummyResponse));
   }
 
   @override
   Future<void> updateIncomeSources(Set<IncomeSource> selectedCategories) async {
 
   }
+
+  @override
+  Future<Sources> getPersionalInfo(int itrId) async {
+    final params = {'itrId': itrId.toString()};
+    final res = await _api.getApi(baseUrl + getPersionalInfoURL,
+        queryParameters: params );
+    return Sources.fromJson(res);
+  }
+
+  // @override
+  // Future<ItrResponse> getItrById(int itrId) async {
+  //   final params = {'itrId': itrId.toString()};
+  //   final res = await _api.getApi(baseUrl + getPersionalInfo,
+  //       queryParameters: params);
+  //   return ItrResponse.fromJson(res);
+  // }
+
 }
 
 final dummyResponse = '''

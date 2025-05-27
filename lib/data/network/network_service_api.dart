@@ -11,13 +11,23 @@ class NetworkServiceApi implements BaseApiServices {
   final SessionController _sessionController = SessionController();
 
   @override
-  Future getApi(String url) async {
+  Future getApi(
+    String url, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     try {
       final headers = await _getHeaders();
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      ).timeout(const Duration(seconds: 30));
+      Uri uri = Uri.parse(url);
+      if (queryParameters != null && queryParameters.isNotEmpty) {
+        uri = uri.replace(queryParameters: queryParameters);
+      }
+      final response = await http
+          .get(
+            uri,
+            // Uri.parse(url),
+            headers: headers,
+          )
+          .timeout(const Duration(seconds: 30));
 
       return returnResponse(response);
     } on SocketException {
@@ -30,14 +40,33 @@ class NetworkServiceApi implements BaseApiServices {
   }
 
   @override
-  Future postApi(String url, dynamic data) async {
+  Future postApi(
+    String url,
+    dynamic data, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     try {
       final headers = await _getHeaders();
-      final response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: jsonEncode(data),
-      ).timeout(const Duration(seconds: 30));
+      Uri uri = Uri.parse(url);
+      if (queryParameters != null && queryParameters.isNotEmpty) {
+        uri = uri.replace(queryParameters: queryParameters);
+      }
+
+      if (kDebugMode) {
+        print("🌐 [API Request] POST ${uri.toString()}");
+        if (data != null) print("📦 [Request Body] ${jsonEncode(data)}");
+        if (queryParameters != null) {
+          print("🔍 [Query Params] $queryParameters");
+        }
+      }
+
+      final response = await http
+          .post(
+            uri,
+            headers: headers,
+            body: data != null ? jsonEncode(data) : null,
+          )
+          .timeout(const Duration(seconds: 30));
 
       return returnResponse(response);
     } on SocketException {

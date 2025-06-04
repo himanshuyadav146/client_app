@@ -15,3 +15,13 @@ enum Category {
 
   const Category(this.icon, this.name);
 }
+
+enum DocumentSource { camera, gallery }
+enum DocumentType { image, pdf }
+enum DocumentCategory {
+  form16a,
+  form16b,
+  aadhaar,
+  pan,
+  other,
+}

@@ -7,15 +7,18 @@ import '../../services/session_manager/session_manager.dart';
 import '../income_source/income_source_bloc.dart';
 import 'package:client_app/data/models/income_source/sources.dart';
 
-
 part 'persional_info_event.dart';
+
 part 'persional_info_state.dart';
 
 class PersionalInfoBloc extends Bloc<PersionalInfoEvent, PersionalInfoState> {
   final PersionalInfoRepository persionalInfoRepository;
   final SessionController sessionController = getIt<SessionController>();
+  PersionalInfoModel? _cachedPersionalInfo;
 
-  PersionalInfoBloc({required this.persionalInfoRepository})
+  PersionalInfoBloc(
+      {required this.persionalInfoRepository,
+      required IncomeSourceBloc incomeSourceBloc})
       : super(PersionalInfoFormInitial()) {
     on<GetPersionalInfo>(_onGetPersionalInfo);
     on<PersionalInfoSubmit>(_onSubmitPersionalInfo);
@@ -23,8 +26,30 @@ class PersionalInfoBloc extends Bloc<PersionalInfoEvent, PersionalInfoState> {
 
   void _onGetPersionalInfo(
       GetPersionalInfo event, Emitter<PersionalInfoState> emit) {
-    // Use persionalInfoModel if needed
   }
+
+
+  // Add this method to cache the data
+  void cachePersionalInfo(PersionalInfoModel data) {
+    _cachedPersionalInfo = data;
+  }
+
+  // Modify this method to use cached data
+  PersionalInfoModel? getIncomeSourceByITR() {
+    try {
+      final incomeSourceBloc = getIt<IncomeSourceBloc>();
+      if (incomeSourceBloc.state is IncomeSourceLoadedState) {
+        _cachedPersionalInfo = (incomeSourceBloc.state as IncomeSourceLoadedState)
+            .personalInfo?.data?.first;
+      }
+      return _cachedPersionalInfo;
+    } catch (e) {
+      return _cachedPersionalInfo;
+    }
+  }
+
+  // Add this getter
+  PersionalInfoModel? get cachedPersionalInfo => _cachedPersionalInfo;
 
   Future<void> _onSubmitPersionalInfo(
       PersionalInfoSubmit event, Emitter<PersionalInfoState> emit) async {
@@ -38,7 +63,8 @@ class PersionalInfoBloc extends Bloc<PersionalInfoEvent, PersionalInfoState> {
         sessionController.saveITRID(response.itrId.toString());
         emit(PersionalInfoSubmissionSuccess());
       } else {
-        emit(PersionalInfoSubmissionFailure(response.message ?? 'Submission failed'));
+        emit(PersionalInfoSubmissionFailure(
+            response.message ?? 'Submission failed'));
       }
     } catch (e) {
       emit(PersionalInfoSubmissionFailure(e.toString()));
@@ -57,4 +83,6 @@ class PersionalInfoBloc extends Bloc<PersionalInfoEvent, PersionalInfoState> {
       return [];
     }
   }
+
+
 }

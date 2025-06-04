@@ -1,3 +1,4 @@
+import 'package:client_app/domain/repositories/document_upload/document_upload_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client_app/views/documents_upload/upload_progress.dart';
@@ -9,13 +10,17 @@ import 'package:client_app/core/widgets/core_button.dart';
 import 'package:client_app/core/widgets/core_scafold.dart';
 import 'package:client_app/core/widgets/document_card.dart';
 
+import '../../core/di/di_container.dart';
+import '../../core/utils/enums.dart';
+
 class DocumentsUpload extends StatelessWidget {
   const DocumentsUpload({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DocumentUploadBloc(),
+      create: (context) =>
+          DocumentUploadBloc(),
       child: CoreScaffold(
         title: "Documents Upload",
         appBarBackgroundColor: Theme.of(context).primaryColor,
@@ -83,11 +88,11 @@ class DocumentsUpload extends StatelessWidget {
   }
 
   Widget _buildDocumentSection(
-      BuildContext context, {
-        required String title,
-        required DocumentCategory category,
-        required DocumentType type,
-      }) {
+    BuildContext context, {
+    required String title,
+    required DocumentCategory category,
+    required DocumentType type,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -107,12 +112,13 @@ class DocumentsUpload extends StatelessWidget {
   }
 
   Widget _buildUploadStatusForCategory(
-      BuildContext context,
-      DocumentCategory category,
-      ) {
+    BuildContext context,
+    DocumentCategory category,
+  ) {
     return BlocBuilder<DocumentUploadBloc, DocumentUploadState>(
       builder: (context, state) {
-        if (state is DocumentUploadSuccess && state.documentCategory == category) {
+        if (state is DocumentUploadSuccess &&
+            state.documentCategory == category) {
           return Container(
             width: double.infinity,
             padding: const EdgeInsets.all(AppSizes.paddingM),
@@ -136,14 +142,15 @@ class DocumentsUpload extends StatelessWidget {
                   icon: const Icon(Icons.close, size: 18),
                   onPressed: () {
                     context.read<DocumentUploadBloc>().add(
-                      RemoveDocument(),
-                    );
+                          RemoveDocument(),
+                        );
                   },
                 ),
               ],
             ),
           );
-        } else if (state is DocumentUploading && state.documentCategory == category) {
+        } else if (state is DocumentUploading &&
+            state.documentCategory == category) {
           return LinearProgressIndicator(
             backgroundColor: Colors.grey[200],
             color: Theme.of(context).primaryColor,
@@ -165,7 +172,8 @@ class DocumentsUpload extends StatelessWidget {
             //GoRouter.of(context).push(RouteName.documentsVerification);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Please upload all required documents')),
+              const SnackBar(
+                  content: Text('Please upload all required documents')),
             );
           }
         },

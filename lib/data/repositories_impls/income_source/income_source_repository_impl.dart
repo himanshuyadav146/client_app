@@ -4,6 +4,7 @@ import 'package:client_app/data/models/income_source/sources.dart';
 
 import '../../../config/app_urls.dart';
 import '../../../domain/repositories/income_source/income_source_repository.dart';
+import '../../models/income_source/source_response.dart';
 import '../../network/network_service_api.dart';
 
 class IncomeSourceRepositoryImpl implements IncomeSourceRepository {
@@ -21,11 +22,11 @@ class IncomeSourceRepositoryImpl implements IncomeSourceRepository {
   }
 
   @override
-  Future<Sources> getPersionalInfo(int itrId) async {
+  Future<SourceResponse> getPersionalInfo(int itrId) async {
     final params = {'itrId': itrId.toString()};
     final res = await _api.getApi(baseUrl + getPersionalInfoURL,
         queryParameters: params );
-    return Sources.fromJson(res);
+    return SourceResponse.fromJson(res);
   }
 
   // @override

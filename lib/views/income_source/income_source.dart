@@ -18,8 +18,6 @@ class IncomeSourceView extends StatefulWidget {
 class _IncomeSourceViewState extends State<IncomeSourceView> {
 
   // State variable to track the selected category
-  Set<IncomeSource> _selectedCategory = {};
-
   late final IncomeSourceBloc _incomeSourceBloc;
 
   @override

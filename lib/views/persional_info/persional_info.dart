@@ -38,6 +38,12 @@ class _PersionalInfoState extends State<PersionalInfo> {
   String? _selectedFinancialYear;
 
   @override
+  void initState() {
+    super.initState();
+    _populateFormFromBloc();
+  }
+
+  @override
   void dispose() {
     _firstName.dispose();
     _middleName.dispose();
@@ -282,7 +288,7 @@ class _PersionalInfoState extends State<PersionalInfo> {
   }
 
 
-  void _submitForm(BuildContext context) {
+  Future<void> _submitForm(BuildContext context) async {
     final persionalInfoBloc = context.read<PersionalInfoBloc>();
     final incomeSources = persionalInfoBloc.getSelectedIncomeSource();
 
@@ -293,7 +299,7 @@ class _PersionalInfoState extends State<PersionalInfo> {
       lastName: _lastName.text.trim(),
       email: _email.text.trim(),
       userId: SessionController().getUserId(),
-      itrId: '',
+      itrId: await SessionController().getITRID(),
       mobile: _mobile.text.trim(),
       panNumber: _pan.text.trim(),
       dateOfBirth: _dob.text.trim(),
@@ -308,5 +314,27 @@ class _PersionalInfoState extends State<PersionalInfo> {
       return 'Please enter $fieldName';
     }
     return null;
+  }
+
+  void _populateFormFromBloc() {
+    final bloc = context.read<PersionalInfoBloc>();
+    final incomeSources = bloc.getIncomeSourceByITR();
+    final cachedData = bloc.cachedPersionalInfo;
+
+    if (cachedData != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _selectedFinancialYear = cachedData.financialYear;
+          _firstName.text = cachedData.firstName!;
+          _middleName.text = cachedData.middleName!;
+          _lastName.text = cachedData.lastName!;
+          _email.text = cachedData.email!;
+          _dob.text = cachedData.dateOfBirth!;
+          _pan.text = cachedData.panNumber!;
+          // _aadhaar.text = cachedData.;
+          _mobile.text = cachedData.mobile!;
+        });
+      });
+    }
   }
 }

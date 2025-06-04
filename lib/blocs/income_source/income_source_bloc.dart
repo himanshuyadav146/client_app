@@ -1,10 +1,10 @@
+import 'package:client_app/services/session_manager/session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/di/di_container.dart';
+import '../../data/models/income_source/source_response.dart';
 import '../../data/models/income_source/sources.dart';
 import '../../domain/repositories/income_source/income_source_repository.dart';
-import '../../services/session_manager/session_manager.dart';
 
 part 'income_source_event.dart';
 part 'income_source_state.dart';
@@ -26,9 +26,10 @@ class IncomeSourceBloc extends Bloc<IncomeSourceEvent, IncomeSourceState> {
     emit(IncomeSourceLoadingState());
 
     List<IncomeSource> sources = [];
-    Sources? personalInfo;
+    SourceResponse? personalInfo;
     String? sourcesError;
     String? personalInfoError;
+    final itrId = await SessionController().getITRID();
 
     // Load income sources
     try {
@@ -41,7 +42,8 @@ class IncomeSourceBloc extends Bloc<IncomeSourceEvent, IncomeSourceState> {
 
     // Load personal info
     try {
-      personalInfo = await repository.getPersionalInfo(2);
+      personalInfo = await repository.getPersionalInfo(2); // TODO - need to remove hardcoded value
+      // personalInfo = await repository.getPersionalInfo(itrId as int);
     } catch (e) {
       personalInfoError = 'Failed to load personal info';
       debugPrint('Personal info error: $e');
@@ -88,7 +90,7 @@ class IncomeSourceBloc extends Bloc<IncomeSourceEvent, IncomeSourceState> {
 
   List<IncomeSource> _getPreselectedCategories(
       List<IncomeSource> allSources,
-      Sources personalInfo,
+      SourceResponse personalInfo,
       ) {
     // Implement logic to match personalInfo with income sources
     // Example: if personalInfo has salary=true, select salary category

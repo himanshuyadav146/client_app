@@ -9,7 +9,8 @@ class IncomeSourceLoadingState extends IncomeSourceState {}
 class IncomeSourceLoadedState extends IncomeSourceState {
   final List<IncomeSource> sources;
   final List<IncomeSource> selectedCategories;
-  final Sources? personalInfo;
+  // final Sources? personalInfo;
+  final SourceResponse? personalInfo;
   final String? sourcesError;
   final String? personalInfoError;
 
@@ -24,7 +25,7 @@ class IncomeSourceLoadedState extends IncomeSourceState {
   IncomeSourceLoadedState copyWith({
     List<IncomeSource>? sources,
     List<IncomeSource>? selectedCategories,
-    Sources? personalInfo,
+    SourceResponse? personalInfo,
     String? sourcesError,
     String? personalInfoError,
   }) {

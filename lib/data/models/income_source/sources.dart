@@ -1,20 +1,23 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'sources.g.dart';
 
-
 @JsonSerializable(explicitToJson: true)
 class Sources {
   String? status;
   @JsonKey(name: 'data')
   List<IncomeSource>? data;
+  String? id;
+  String? sourceId;
+  String? sourceName;
+  String? isSelect;
+  String? itrId;
 
-  Sources({this.status, this.data});
+  Sources({this.status, this.data,this.id,this.sourceId,this.sourceName,this.isSelect,this.itrId});
 
   factory Sources.fromJson(Map<String, dynamic> json) =>
       _$SourcesFromJson(json);
   Map<String, dynamic> toJson() => _$SourcesToJson(this);
 }
-
 
 @JsonSerializable(explicitToJson: true)
 class IncomeSource {
@@ -44,9 +47,9 @@ class IncomeSource {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is IncomeSource &&
-              runtimeType == other.runtimeType &&
-              id == other.id;
+      other is IncomeSource &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
 
   @override
   int get hashCode => id.hashCode;

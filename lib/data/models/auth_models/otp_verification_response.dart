@@ -12,7 +12,12 @@ class OTPVerificationResponse {
   Data? data;
 
   OTPVerificationResponse(
-      {this.status, this.message, this.data, this.otp, this.mobile,this.token});
+      {this.status,
+      this.message,
+      this.data,
+      this.otp,
+      this.mobile,
+      this.token});
 
   factory OTPVerificationResponse.fromJson(Map<String, dynamic> json) =>
       _$OTPVerificationResponseFromJson(json);

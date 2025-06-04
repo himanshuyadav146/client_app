@@ -6,6 +6,7 @@ import 'package:client_app/core/widgets/document_picker_bottom_sheet.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../blocs/documents_upload/document_upload_bloc.dart';
+import '../utils/enums.dart';
 
 class DocumentCard extends StatelessWidget {
   final String title;

@@ -1,11 +1,10 @@
-
 part of 'document_upload_bloc.dart';
 
 abstract class DocumentUploadEvent extends Equatable {
   const DocumentUploadEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class PickDocument extends DocumentUploadEvent {
@@ -20,7 +19,7 @@ class PickDocument extends DocumentUploadEvent {
   });
 
   @override
-  List<Object> get props => [source, documentType, documentCategory];
+  List<Object?> get props => [source, documentType, documentCategory];
 }
 
 class UploadDocument extends DocumentUploadEvent {
@@ -35,9 +34,18 @@ class UploadDocument extends DocumentUploadEvent {
   });
 
   @override
-  List<Object> get props => [file, documentType, documentCategory];
+  List<Object?> get props => [file, documentType, documentCategory];
 }
 
 class RemoveDocument extends DocumentUploadEvent {
-  const RemoveDocument();
+  final DocumentCategory category;
+  final UploadedDocument document;
+
+  const RemoveDocument({
+    required this.category,
+    required this.document,
+  });
+
+  @override
+  List<Object?> get props => [category, document];
 }

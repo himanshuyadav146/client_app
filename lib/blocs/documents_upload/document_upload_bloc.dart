@@ -33,7 +33,7 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
 
       File? file;
       if (event.source == DocumentSource.camera) {
-        final pickedFile = await ImagePicker().pickImage(
+        final pickedFile = await _imagePicker.pickImage(
           source: ImageSource.camera,
           maxWidth: 1800,
           maxHeight: 1800,
@@ -44,7 +44,7 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
         }
       } else if (event.source == DocumentSource.gallery) {
         if (event.documentType == DocumentType.image) {
-          final pickedFile = await ImagePicker().pickImage(
+          final pickedFile = await _imagePicker.pickImage(
             source: ImageSource.gallery,
             maxWidth: 1800,
             maxHeight: 1800,
@@ -54,7 +54,7 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
             file = File(pickedFile.path);
           }
         } else {
-          final result = await FilePicker.platform.pickFiles(
+          final result = await _filePicker.pickFiles(
             type: FileType.custom,
             allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
           );
@@ -83,13 +83,23 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
       Emitter<DocumentUploadState> emit,
       ) async {
     try {
-      emit(DocumentUploading(documentCategory: event.documentCategory));
+      emit(DocumentUploading(
+        documentCategory: event.documentCategory,
+        uploadedDocuments: state.uploadedDocuments,
+      ));
+
       // Mock upload - replace with actual API call
       await Future.delayed(const Duration(seconds: 2));
-      emit(DocumentUploadSuccess(
+
+      final uploadedDoc = UploadedDocument(
         documentUrl: 'https://example.com/${event.file.path.split('/').last}',
         documentType: event.documentType,
+      );
+
+      emit(DocumentUploadSuccess(
         documentCategory: event.documentCategory,
+        uploadedDocument: uploadedDoc,
+        uploadedDocuments: state.uploadedDocuments,
       ));
     } catch (e) {
       emit(DocumentUploadFailure(error: e.toString()));
@@ -100,6 +110,12 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
       RemoveDocument event,
       Emitter<DocumentUploadState> emit,
       ) {
-    emit(DocumentUploadInitial());
+    final newDocuments = Map<DocumentCategory, List<UploadedDocument>>.from(state.uploadedDocuments);
+    final categoryDocuments = List<UploadedDocument>.from(newDocuments[event.category] ?? []);
+    categoryDocuments.remove(event.document);
+
+    newDocuments[event.category] = categoryDocuments;
+
+    emit(DocumentUploadInitial(uploadedDocuments: newDocuments));
   }
 }

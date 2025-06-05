@@ -133,7 +133,7 @@ class DocumentsUpload extends StatelessWidget {
                 const SizedBox(width: AppSizes.paddingS),
                 Expanded(
                   child: Text(
-                    'Uploaded: ${state.documentUrl.split('/').last}',
+                    'Uploaded: ${state.documentCategory}',
                     style: const TextStyle(fontSize: 14),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -141,9 +141,7 @@ class DocumentsUpload extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.close, size: 18),
                   onPressed: () {
-                    context.read<DocumentUploadBloc>().add(
-                          RemoveDocument(),
-                        );
+                    //context.read<DocumentUploadBloc>().add();
                   },
                 ),
               ],

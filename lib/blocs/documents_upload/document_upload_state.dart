@@ -21,6 +21,9 @@ class UploadedDocument {
   int get hashCode => documentUrl.hashCode;
 }
 
+// ----------------------
+// Abstract State
+// ----------------------
 abstract class DocumentUploadState extends Equatable {
   final Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments;
 
@@ -30,19 +33,27 @@ abstract class DocumentUploadState extends Equatable {
   List<Object?> get props => [uploadedDocuments];
 }
 
+// ----------------------
+// Initial State
+// ----------------------
 class DocumentUploadInitial extends DocumentUploadState {
   const DocumentUploadInitial({
     Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments = const {},
   }) : super(uploadedDocuments: uploadedDocuments);
-
-  @override
-  List<Object?> get props => [uploadedDocuments];
 }
 
+// ----------------------
+// Picking/Uploading Progress
+// ----------------------
 class DocumentUploadInProgress extends DocumentUploadState {
-  const DocumentUploadInProgress() : super();
+  const DocumentUploadInProgress({
+    required Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments,
+  }) : super(uploadedDocuments: uploadedDocuments);
 }
 
+// ----------------------
+// Picked File Ready for Upload
+// ----------------------
 class DocumentUploadReady extends DocumentUploadState {
   final File file;
   final DocumentType documentType;
@@ -52,49 +63,62 @@ class DocumentUploadReady extends DocumentUploadState {
     required this.file,
     required this.documentType,
     required this.documentCategory,
-  }) : super();
+    required Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments,
+  }) : super(uploadedDocuments: uploadedDocuments);
 
   @override
-  List<Object?> get props => [file, documentType, documentCategory];
+  List<Object?> get props => [
+    file,
+    documentType,
+    documentCategory,
+    uploadedDocuments,
+  ];
 }
 
+// ----------------------
+// Upload in Progress
+// ----------------------
 class DocumentUploading extends DocumentUploadState {
   final DocumentCategory documentCategory;
 
   const DocumentUploading({
     required this.documentCategory,
-    Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments = const {},
+    required Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments,
   }) : super(uploadedDocuments: uploadedDocuments);
 
   @override
   List<Object?> get props => [documentCategory, uploadedDocuments];
 }
 
+// ----------------------
+// Upload Success
+// ----------------------
 class DocumentUploadSuccess extends DocumentUploadState {
   final DocumentCategory documentCategory;
-  final UploadedDocument uploadedDocument;
+  final List<UploadedDocument> uploadedDocumentsList;
 
-  DocumentUploadSuccess({
+  const DocumentUploadSuccess({
     required this.documentCategory,
-    required this.uploadedDocument,
-    Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments = const {},
-  }) : super(uploadedDocuments: {
-    ...uploadedDocuments,
-    documentCategory: [
-      ...?uploadedDocuments[documentCategory],
-      uploadedDocument,
-    ],
-  });
+    required this.uploadedDocumentsList,
+    required Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments,
+  }) : super(uploadedDocuments: uploadedDocuments);
 
   @override
-  List<Object?> get props => [documentCategory, uploadedDocument, uploadedDocuments];
+  List<Object?> get props =>
+      [documentCategory, uploadedDocumentsList, uploadedDocuments];
 }
 
+// ----------------------
+// Upload Failure
+// ----------------------
 class DocumentUploadFailure extends DocumentUploadState {
   final String error;
 
-  const DocumentUploadFailure({required this.error}) : super();
+  const DocumentUploadFailure({
+    required this.error,
+    required Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments,
+  }) : super(uploadedDocuments: uploadedDocuments);
 
   @override
-  List<Object?> get props => [error];
+  List<Object?> get props => [error, uploadedDocuments];
 }

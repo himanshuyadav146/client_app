@@ -1,4 +1,3 @@
-import 'package:client_app/domain/repositories/document_upload/document_upload_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:client_app/views/documents_upload/upload_progress.dart';
@@ -10,7 +9,6 @@ import 'package:client_app/core/widgets/core_button.dart';
 import 'package:client_app/core/widgets/core_scafold.dart';
 import 'package:client_app/core/widgets/document_card.dart';
 
-import '../../core/di/di_container.dart';
 import '../../core/utils/enums.dart';
 
 class DocumentsUpload extends StatelessWidget {
@@ -112,40 +110,56 @@ class DocumentsUpload extends StatelessWidget {
   }
 
   Widget _buildUploadStatusForCategory(
-    BuildContext context,
-    DocumentCategory category,
-  ) {
+      BuildContext context,
+      DocumentCategory category,
+      ) {
     return BlocBuilder<DocumentUploadBloc, DocumentUploadState>(
       builder: (context, state) {
-        if (state is DocumentUploadSuccess &&
-            state.documentCategory == category) {
-          return Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(AppSizes.paddingM),
-            decoration: BoxDecoration(
-              color: Colors.green[50],
-              borderRadius: BorderRadius.circular(AppSizes.paddingS),
-              border: Border.all(color: Colors.green.shade100),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.check_circle, color: Colors.green, size: 20),
-                const SizedBox(width: AppSizes.paddingS),
-                Expanded(
-                  child: Text(
-                    'Uploaded: ${state.documentCategory}',
-                    style: const TextStyle(fontSize: 14),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+        final uploadedMap = state.uploadedDocuments;
+
+        final documents = uploadedMap[category] ?? [];
+        if (documents.isNotEmpty) {
+          return ListView.separated(
+            separatorBuilder: (context, index) => const SizedBox(height: 4.0),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: documents.length,
+            itemBuilder: (BuildContext context, int index) {
+              final doc = documents[index];
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSizes.paddingM),
+                decoration: BoxDecoration(
+                  color: Colors.green[50],
+                  borderRadius: BorderRadius.circular(AppSizes.paddingS),
+                  border: Border.all(color: Colors.green.shade100),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close, size: 18),
-                  onPressed: () {
-                    //context.read<DocumentUploadBloc>().add();
-                  },
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                    const SizedBox(width: AppSizes.paddingS),
+                    Expanded(
+                      child: Text(
+                        doc.documentUrl.split('/').last,
+                        style: const TextStyle(fontSize: 14),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, size: 18),
+                      onPressed: () {
+                        context.read<DocumentUploadBloc>().add(
+                          RemoveDocument(
+                            category: category,
+                            document: doc,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           );
         } else if (state is DocumentUploading &&
             state.documentCategory == category) {
@@ -159,6 +173,7 @@ class DocumentsUpload extends StatelessWidget {
       },
     );
   }
+
 
   Widget _buildSubmitButton(BuildContext context) {
     return SafeArea(

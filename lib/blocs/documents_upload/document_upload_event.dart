@@ -9,32 +9,32 @@ abstract class DocumentUploadEvent extends Equatable {
 
 class PickDocument extends DocumentUploadEvent {
   final DocumentSource source;
-  final DocumentType documentType;
   final DocumentCategory documentCategory;
+  final DocumentType documentType;
 
   const PickDocument({
     required this.source,
-    required this.documentType,
     required this.documentCategory,
+    required this.documentType,
   });
 
   @override
-  List<Object?> get props => [source, documentType, documentCategory];
+  List<Object?> get props => [source, documentCategory, documentType];
 }
 
 class UploadDocument extends DocumentUploadEvent {
   final File file;
-  final DocumentType documentType;
   final DocumentCategory documentCategory;
+  final DocumentType documentType;
 
   const UploadDocument({
     required this.file,
-    required this.documentType,
     required this.documentCategory,
+    required this.documentType,
   });
 
   @override
-  List<Object?> get props => [file, documentType, documentCategory];
+  List<Object?> get props => [file, documentCategory, documentType];
 }
 
 class RemoveDocument extends DocumentUploadEvent {

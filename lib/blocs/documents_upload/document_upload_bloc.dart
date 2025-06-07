@@ -18,20 +18,21 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
   final FilePicker _filePicker = FilePicker.platform;
   final SessionController sessionController = getIt<SessionController>();
 
-  DocumentUploadBloc() : super(DocumentUploadInitial()) {
+  // Map to store documents by category
+  final Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments = {};
+
+  DocumentUploadBloc() : super(DocumentUploadInitial(uploadedDocuments: {})) {
     on<PickDocument>(_onPickDocument);
     on<UploadDocument>(_onUploadDocument);
     on<RemoveDocument>(_onRemoveDocument);
   }
 
-  Future<void> _onPickDocument(
-      PickDocument event,
-      Emitter<DocumentUploadState> emit,
-      ) async {
+  Future<void> _onPickDocument(PickDocument event, Emitter<DocumentUploadState> emit) async {
     try {
-      emit(DocumentUploadInProgress());
+      emit(DocumentUploadInProgress(uploadedDocuments: uploadedDocuments));
 
       File? file;
+
       if (event.source == DocumentSource.camera) {
         final pickedFile = await _imagePicker.pickImage(
           source: ImageSource.camera,
@@ -69,40 +70,45 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
           file: file,
           documentType: event.documentType,
           documentCategory: event.documentCategory,
+          uploadedDocuments: uploadedDocuments,
         ));
       } else {
-        emit(DocumentUploadInitial());
+        emit(DocumentUploadInitial(uploadedDocuments: uploadedDocuments));
       }
     } catch (e) {
-      emit(DocumentUploadFailure(error: e.toString()));
+      emit(DocumentUploadFailure(error: e.toString(), uploadedDocuments: uploadedDocuments));
     }
   }
 
-  Future<void> _onUploadDocument(
-      UploadDocument event,
-      Emitter<DocumentUploadState> emit,
-      ) async {
+  Future<void> _onUploadDocument(UploadDocument event, Emitter<DocumentUploadState> emit) async {
     try {
       emit(DocumentUploading(
         documentCategory: event.documentCategory,
-        uploadedDocuments: state.uploadedDocuments,
+        uploadedDocuments: uploadedDocuments,
       ));
 
-      // Mock upload - replace with actual API call
+      // Simulated delay for upload
       await Future.delayed(const Duration(seconds: 2));
 
-      final uploadedDoc = UploadedDocument(
-        documentUrl: 'https://example.com/${event.file.path.split('/').last}',
-        documentType: event.documentType,
+      final category = event.documentCategory;
+      final documents = uploadedDocuments[category] ?? [];
+
+      documents.add(
+        UploadedDocument(
+          documentUrl: 'https://example.com/${event.file.path.split('/').last}',
+          documentType: event.documentType,
+        ),
       );
 
+      uploadedDocuments[category] = documents;
+
       emit(DocumentUploadSuccess(
-        documentCategory: event.documentCategory,
-        uploadedDocument: uploadedDoc,
-        uploadedDocuments: state.uploadedDocuments,
+        documentCategory: category,
+        uploadedDocumentsList: documents,
+        uploadedDocuments: uploadedDocuments,
       ));
     } catch (e) {
-      emit(DocumentUploadFailure(error: e.toString()));
+      emit(DocumentUploadFailure(error: e.toString(), uploadedDocuments: uploadedDocuments));
     }
   }
 
@@ -110,12 +116,27 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
       RemoveDocument event,
       Emitter<DocumentUploadState> emit,
       ) {
-    final newDocuments = Map<DocumentCategory, List<UploadedDocument>>.from(state.uploadedDocuments);
-    final categoryDocuments = List<UploadedDocument>.from(newDocuments[event.category] ?? []);
-    categoryDocuments.remove(event.document);
+    // Clone current map
+    final currentDocuments = Map<DocumentCategory, List<UploadedDocument>>.from(
+      state.uploadedDocuments,
+    );
 
-    newDocuments[event.category] = categoryDocuments;
+    // Clone the specific category list
+    final docsInCategory = List<UploadedDocument>.from(
+      currentDocuments[event.category] ?? [],
+    );
 
-    emit(DocumentUploadInitial(uploadedDocuments: newDocuments));
+    // Remove the specific document
+    docsInCategory.removeWhere((doc) => doc.documentUrl == event.document.documentUrl);
+
+    // Update the map
+    currentDocuments[event.category] = docsInCategory;
+
+    emit(DocumentUploadSuccess(
+      documentCategory: event.category,
+      uploadedDocumentsList: docsInCategory,
+      uploadedDocuments: currentDocuments,
+    ));
   }
+
 }

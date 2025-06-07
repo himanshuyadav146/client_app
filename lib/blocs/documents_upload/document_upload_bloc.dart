@@ -27,9 +27,12 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
     on<RemoveDocument>(_onRemoveDocument);
   }
 
-  Future<void> _onPickDocument(PickDocument event, Emitter<DocumentUploadState> emit) async {
+  Future<void> _onPickDocument(
+      PickDocument event,
+      Emitter<DocumentUploadState> emit,
+      ) async {
     try {
-      emit(DocumentUploadInProgress(uploadedDocuments: uploadedDocuments));
+      emit(DocumentUploadInProgress(uploadedDocuments: {}));
 
       File? file;
 
@@ -66,19 +69,20 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
       }
 
       if (file != null) {
-        emit(DocumentUploadReady(
+        // Instead of emitting DocumentUploadReady, directly call upload event
+        add(UploadDocument(
           file: file,
           documentType: event.documentType,
           documentCategory: event.documentCategory,
-          uploadedDocuments: uploadedDocuments,
         ));
       } else {
-        emit(DocumentUploadInitial(uploadedDocuments: uploadedDocuments));
+        emit(const DocumentUploadInitial());
       }
     } catch (e) {
-      emit(DocumentUploadFailure(error: e.toString(), uploadedDocuments: uploadedDocuments));
+      // emit(DocumentUploadFailure(error: e.toString()));
     }
   }
+
 
   Future<void> _onUploadDocument(UploadDocument event, Emitter<DocumentUploadState> emit) async {
     try {

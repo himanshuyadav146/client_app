@@ -40,14 +40,15 @@ class DocumentCard extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error)),
           );
-        } else if (state is DocumentUploadReady) {
-          // Auto-upload when file is selected
-          context.read<DocumentUploadBloc>().add(UploadDocument(
-            file: state.file,
-            documentType: state.documentType,
-            documentCategory: state.documentCategory,
-          ));
         }
+        // else if (state is DocumentUploadReady) {
+        //   // Auto-upload when file is selected
+        //   context.read<DocumentUploadBloc>().add(UploadDocument(
+        //     file: state.file,
+        //     documentType: state.documentType,
+        //     documentCategory: state.documentCategory,
+        //   ));
+        // }
       },
       builder: (context, state) {
         final isCurrentDocument = state is DocumentUploadSuccess &&

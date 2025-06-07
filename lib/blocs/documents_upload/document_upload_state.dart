@@ -54,26 +54,26 @@ class DocumentUploadInProgress extends DocumentUploadState {
 // ----------------------
 // Picked File Ready for Upload
 // ----------------------
-class DocumentUploadReady extends DocumentUploadState {
-  final File file;
-  final DocumentType documentType;
-  final DocumentCategory documentCategory;
-
-  const DocumentUploadReady({
-    required this.file,
-    required this.documentType,
-    required this.documentCategory,
-    required Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments,
-  }) : super(uploadedDocuments: uploadedDocuments);
-
-  @override
-  List<Object?> get props => [
-    file,
-    documentType,
-    documentCategory,
-    uploadedDocuments,
-  ];
-}
+// class DocumentUploadReady extends DocumentUploadState {
+//   final File file;
+//   final DocumentType documentType;
+//   final DocumentCategory documentCategory;
+//
+//   const DocumentUploadReady({
+//     required this.file,
+//     required this.documentType,
+//     required this.documentCategory,
+//     required Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments,
+//   }) : super(uploadedDocuments: uploadedDocuments);
+//
+//   @override
+//   List<Object?> get props => [
+//     file,
+//     documentType,
+//     documentCategory,
+//     uploadedDocuments,
+//   ];
+// }
 
 // ----------------------
 // Upload in Progress

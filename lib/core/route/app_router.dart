@@ -1,5 +1,7 @@
 import 'package:client_app/core/route/route_name.dart';
 import 'package:client_app/views/documents_upload/documents_upload.dart';
+import 'package:client_app/views/order_status/order_status.dart';
+import 'package:client_app/views/payment/payment.dart';
 import 'package:client_app/views/persional_info/persional_info.dart';
 import 'package:client_app/views/tab_bar/tabbar_screen.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +53,14 @@ class AppRouter {
       GoRoute(
         path: RouteName.documentsUpload,
         builder: (context, state) => DocumentsUpload(),
+      ),
+      GoRoute(
+        path: RouteName.payment,
+        builder: (context, state) => Payment(),
+      ),
+      GoRoute(
+        path: RouteName.orderStatus,
+        builder: (context, state) => OrderStatusScreen(),
       ),
     ],
     errorPageBuilder: (context, state) => MaterialPage(

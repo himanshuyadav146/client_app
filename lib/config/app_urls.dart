@@ -12,3 +12,4 @@ const String verifyOTP = 'otpvalidate.php';
 const String getIncomeSource = 'get_source_income.php';
 const String saveIncomeSource = 'add_itr_detail.php';
 const String getPersionalInfoURL = 'get_itrbyitrid.php';
+const String docUpload = 'add_documents.php';

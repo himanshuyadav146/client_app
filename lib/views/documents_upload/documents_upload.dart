@@ -8,7 +8,9 @@ import 'package:client_app/core/constant/icon_constant.dart';
 import 'package:client_app/core/widgets/core_button.dart';
 import 'package:client_app/core/widgets/core_scafold.dart';
 import 'package:client_app/core/widgets/document_card.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../core/route/route_name.dart';
 import '../../core/utils/enums.dart';
 
 class DocumentsUpload extends StatelessWidget {
@@ -180,15 +182,16 @@ class DocumentsUpload extends StatelessWidget {
       child: CoreButton(
         text: 'Submit Documents',
         onPressed: () {
-          final state = context.read<DocumentUploadBloc>().state;
-          if (state is DocumentUploadSuccess) {
-            //GoRouter.of(context).push(RouteName.documentsVerification);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Please upload all required documents')),
-            );
-          }
+          GoRouter.of(context).push(RouteName.payment);
+          // final state = context.read<DocumentUploadBloc>().state;
+          // if (state is DocumentUploadSuccess) {
+          //   GoRouter.of(context).push(RouteName.payment);
+          // } else {
+          //   ScaffoldMessenger.of(context).showSnackBar(
+          //     const SnackBar(
+          //         content: Text('Please upload all required documents')),
+          //   );
+          // }
         },
       ),
     );

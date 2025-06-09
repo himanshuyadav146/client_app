@@ -21,4 +21,6 @@ class RouteName {
   static const String persionalInfo = '/persional-info';
   static const String importantDetails = '/important_details';
   static const String documentsUpload = '/document_upload';
+  static const String payment = '/payment';
+  static const String orderStatus = '/order-status';
 }

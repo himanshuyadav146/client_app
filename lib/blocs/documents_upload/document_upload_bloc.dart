@@ -91,8 +91,15 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
         uploadedDocuments: uploadedDocuments,
       ));
 
-      // Simulated delay for upload
-      await Future.delayed(const Duration(seconds: 2));
+      // // Simulated delay for upload
+      // await Future.delayed(const Duration(seconds: 2));
+
+
+     final response = await documentUploadRepository.uploadDocument(
+          filePath: event.file.path,
+          fileName: event.documentCategory.name,
+          userId: "6",
+          itrId: "2");
 
       final category = event.documentCategory;
       final documents = uploadedDocuments[category] ?? [];

@@ -37,8 +37,7 @@ class DocumentCard extends StatelessWidget {
     return BlocConsumer<DocumentUploadBloc, DocumentUploadState>(
       listener: (context, state) {
         if (state is DocumentUploadFailure &&
-            !state.hasBeenHandled &&
-            state.documentCategory == widget.documentCategory) {
+            !state.hasBeenHandled) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error),

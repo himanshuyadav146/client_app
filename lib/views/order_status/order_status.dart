@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constant/app_sizes.dart';
 import '../../core/widgets/animated_status_list.dart';
+import '../../core/widgets/core_button.dart';
+import '../../core/widgets/core_scafold.dart';
 import '../../data/models/order_status/order_status.dart';
 
 
 class OrderStatusScreen extends StatefulWidget {
+
   @override
   _OrderStatusScreenState createState() => _OrderStatusScreenState();
 }
@@ -54,64 +58,80 @@ class _OrderStatusScreenState extends State<OrderStatusScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Order Status'),
-        centerTitle: true,
-      ),
+    return CoreScaffold(
+      title: 'Order Status',
+      appBarBackgroundColor: Theme.of(context).primaryColor,
+      appBarForegroundColor: Colors.white,
+      showBackButton: true,
+      isDrawer: false,
+      isResizeToAvoidBottomInset: true,
+      onBackButtonPressed: () {
+        // Check if context is still mounted before using it
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
+      },
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: AppPadding.paddingAllM,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'INVOICE : 12A394',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
-              ),
-            ),
-            SizedBox(height: 24),
-            Text(
-              'TRACKING',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[600],
-              ),
-            ),
-            SizedBox(height: 16),
-            Expanded(
-              child: AnimatedStatusList(
-                statusItems: statusItems,
-                animation: _animation,
-              ),
-            ),
-            SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Handle delivery confirmation
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    'Confirm Delivery',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ),
+            _buildStatusPage(statusItems,_animation),
+            const Spacer(),
+            _buildFormSubmit(context), // Remains a method call
           ],
         ),
       ),
     );
   }
+}
+
+Widget _buildStatusPage(List<OrderStatus> statusItems, Animation<double> animation){
+  return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'INVOICE : 12A394',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[700],
+                ),
+              ),
+              SizedBox(height: 24),
+              Text(
+                'TRACKING',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              SizedBox(height: 16),
+              SizedBox(
+                height: 500,
+                child: Expanded(
+                  child: AnimatedStatusList(
+                    statusItems: statusItems,
+                    animation: animation,
+                  ),
+                ),
+              ),
+            ],
+          ),
+      );
+}
+
+Widget _buildFormSubmit(BuildContext context) {
+  return SafeArea(
+    child: CoreButton(
+        text: 'Back To Home',
+        // onPressed: _openRazorpayCheckout, // Updated onPressed
+        onPressed:() {
+          //GoRouter.of(context).push(RouteName.orderStatus);
+          Navigator.of(context).pop();
+        }
+    ),
+  );
 }

@@ -235,7 +235,10 @@ class _PaymentPageState extends State<PaymentPage> {
     return SafeArea(
       child: CoreButton(
         text: 'Pay Now',
-        onPressed: _openRazorpayCheckout, // Updated onPressed
+        // onPressed: _openRazorpayCheckout, // Updated onPressed
+          onPressed:() {
+            GoRouter.of(context).push(RouteName.orderStatus);
+          }
       ),
     );
   }

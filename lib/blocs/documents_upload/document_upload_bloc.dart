@@ -153,10 +153,13 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
 
 
      // Access userId and itrId from SessionController
-     final userId = sessionController.getUserId(); // Assuming getUserId() method exists
-     final itrId = sessionController.getItrId(); // Assuming getItrId() method exists
+     // final userId = sessionController.getUserId(); // Assuming getUserId() method exists
+     // final itrId = sessionController.getItrId(); // Assuming getItrId() method exists
 
-     final response = await documentUploadRepository.uploadDocument(
+      final userId = "6";
+      final itrId = "2";
+
+      final response = await documentUploadRepository.uploadDocument(
           filePath: event.file.path,
           fileName: event.documentCategory.name,
           userId: userId ?? "defaultUserId", // Provide a default or handle null appropriately

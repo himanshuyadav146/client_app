@@ -12,6 +12,62 @@ import '../../services/session_manager/session_manager.dart';
 part 'document_upload_event.dart';
 part 'document_upload_state.dart';
 
+// Define MarkUploadErrorAsHandled event if not already in document_upload_event.dart
+// If document_upload_event.dart is a separate file, this class should be there.
+// For this diff, we'll assume it needs to be defined here or ensure it's covered.
+abstract class DocumentUploadEvent extends Equatable {
+  const DocumentUploadEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class PickDocument extends DocumentUploadEvent {
+  final DocumentSource source;
+  final DocumentType documentType;
+  final DocumentCategory documentCategory;
+
+  const PickDocument({
+    required this.source,
+    required this.documentType,
+    required this.documentCategory,
+  });
+
+  @override
+  List<Object> get props => [source, documentType, documentCategory];
+}
+
+class UploadDocument extends DocumentUploadEvent {
+  final File file;
+  final DocumentType documentType;
+  final DocumentCategory documentCategory;
+
+  const UploadDocument({
+    required this.file,
+    required this.documentType,
+    required this.documentCategory,
+  });
+
+  @override
+  List<Object> get props => [file, documentType, documentCategory];
+}
+
+class RemoveDocument extends DocumentUploadEvent {
+  final DocumentCategory category;
+  final UploadedDocument document;
+
+  const RemoveDocument({
+    required this.category,
+    required this.document,
+  });
+
+  @override
+  List<Object> get props => [category, document];
+}
+
+class MarkUploadErrorAsHandled extends DocumentUploadEvent {} // New Event
+
+
 class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> {
   final DocumentUploadRepository documentUploadRepository = getIt<DocumentUploadRepository>();
   final ImagePicker _imagePicker = ImagePicker();
@@ -25,6 +81,7 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
     on<PickDocument>(_onPickDocument);
     on<UploadDocument>(_onUploadDocument);
     on<RemoveDocument>(_onRemoveDocument);
+    on<MarkUploadErrorAsHandled>(_onMarkUploadErrorAsHandled); // Register new event handler
   }
 
   Future<void> _onPickDocument(
@@ -133,7 +190,20 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
         uploadedDocuments: uploadedDocuments,
       ));
     } catch (e) {
+      // Emit with hasBeenHandled: false (which is the default via constructor)
       emit(DocumentUploadFailure(error: e.toString(), uploadedDocuments: uploadedDocuments));
+    }
+  }
+
+  void _onMarkUploadErrorAsHandled(
+      MarkUploadErrorAsHandled event,
+      Emitter<DocumentUploadState> emit,
+      ) {
+    if (state is DocumentUploadFailure) {
+      final currentFailureState = state as DocumentUploadFailure;
+      if (!currentFailureState.hasBeenHandled) {
+        emit(currentFailureState.copyWith(hasBeenHandled: true));
+      }
     }
   }
 

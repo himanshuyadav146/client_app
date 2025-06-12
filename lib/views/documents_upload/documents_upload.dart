@@ -19,11 +19,23 @@ class DocumentsUpload extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          DocumentUploadBloc(),
-      child: CoreScaffold(
-        title: "Documents Upload",
-        appBarBackgroundColor: Theme.of(context).primaryColor,
+      create: (context) => DocumentUploadBloc(),
+      child: BlocListener<DocumentUploadBloc, DocumentUploadState>(
+        listener: (context, state) {
+          if (state is DocumentUploadFailure && !state.hasBeenHandled) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error),
+                backgroundColor: Colors.red,
+              ),
+            );
+            // Dispatch event to mark this error as handled
+            context.read<DocumentUploadBloc>().add(MarkUploadErrorAsHandled());
+          }
+        },
+        child: CoreScaffold(
+          title: "Documents Upload",
+          appBarBackgroundColor: Theme.of(context).primaryColor,
         appBarForegroundColor: Colors.white,
         showBackButton: true,
         body: Padding(

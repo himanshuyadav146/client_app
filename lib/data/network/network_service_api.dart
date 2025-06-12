@@ -94,8 +94,19 @@ class NetworkServiceApi implements BaseApiServices {
 
       // Add headers
       final defaultHeaders = await _getHeaders();
+      // Add any specific headers passed to uploadFile first
       request.headers.addAll(headers ?? {});
+      // Then add default headers (which might include 'Content-Type')
       request.headers.addAll(defaultHeaders);
+
+      // Crucially, remove 'Content-Type' if it was part of defaultHeaders or passed headers,
+      // as MultipartRequest will set its own with the correct boundary.
+      if (request.headers.containsKey('Content-Type')) {
+        request.headers.remove('Content-Type');
+        if (kDebugMode) {
+          print("🔹 [Multipart Upload] Removed 'Content-Type' header to allow http.MultipartRequest to set it.");
+        }
+      }
 
       // Add file
       final file = await http.MultipartFile.fromPath(fieldName, filePath);

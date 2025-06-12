@@ -21,8 +21,10 @@ class DocumentRepositoryImpl implements DocumentUploadRepository {
         filePath: filePath,
         fieldName: fileName,
         additionalFields: {
-          'category': 'aadhaar',
-          'description': 'Aadhaar card upload',
+          'userId': userId,
+          'itrId': itrId,
+          'category': fileName,
+          'description': 'Document upload for $fileName',
         },
         onProgress: (sent, total) {
           print('Upload progress: ${(sent / total * 100).toStringAsFixed(1)}%');

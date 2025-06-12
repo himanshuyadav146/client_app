@@ -95,23 +95,37 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
       // await Future.delayed(const Duration(seconds: 2));
 
 
+     // Access userId and itrId from SessionController
+     final userId = sessionController.getUserId(); // Assuming getUserId() method exists
+     final itrId = sessionController.getItrId(); // Assuming getItrId() method exists
+
      final response = await documentUploadRepository.uploadDocument(
           filePath: event.file.path,
           fileName: event.documentCategory.name,
-          userId: "6",
-          itrId: "2");
+          userId: userId ?? "defaultUserId", // Provide a default or handle null appropriately
+          itrId: itrId ?? "defaultItrId", // Provide a default or handle null appropriately
+     );
+
+      // Get the fileUrl from the response
+      final fileUrl = response['fileUrl'] as String?;
 
       final category = event.documentCategory;
       final documents = uploadedDocuments[category] ?? [];
 
-      documents.add(
-        UploadedDocument(
-          documentUrl: 'https://example.com/${event.file.path.split('/').last}',
-          documentType: event.documentType,
-        ),
-      );
+      if (fileUrl != null) {
+        documents.add(
+          UploadedDocument(
+            documentUrl: fileUrl, // Use the actual fileUrl from the response
+            documentType: event.documentType,
+          ),
+        );
 
-      uploadedDocuments[category] = documents;
+        uploadedDocuments[category] = documents;
+      } else {
+        // Handle the case where fileUrl is null, perhaps emit a failure state
+        // For now, just printing an error or logging
+        print("Error: fileUrl is null after upload.");
+      }
 
       emit(DocumentUploadSuccess(
         documentCategory: category,

@@ -36,10 +36,17 @@ class DocumentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<DocumentUploadBloc, DocumentUploadState>(
       listener: (context, state) {
-        if (state is DocumentUploadFailure) {
+        if (state is DocumentUploadFailure &&
+            !state.hasBeenHandled &&
+            state.documentCategory == widget.documentCategory) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error)),
+            SnackBar(
+              content: Text(state.error),
+              backgroundColor: Colors.red, // Optional: for emphasis
+            ),
           );
+          // Dispatch the event to mark this error as handled
+          context.read<DocumentUploadBloc>().add(MarkUploadErrorAsHandled());
         }
         // else if (state is DocumentUploadReady) {
         //   // Auto-upload when file is selected

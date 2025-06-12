@@ -96,9 +96,7 @@ class DocumentsUpload extends StatelessWidget {
         isDrawer: false,
         isResizeToAvoidBottomInset: false,
       ),
-      )
-      );
-
+    );
   }
 
   Widget _buildDocumentSection(

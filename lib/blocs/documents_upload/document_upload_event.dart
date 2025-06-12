@@ -49,3 +49,5 @@ class RemoveDocument extends DocumentUploadEvent {
   @override
   List<Object?> get props => [category, document];
 }
+
+class MarkUploadErrorAsHandled extends DocumentUploadEvent {}

@@ -56,7 +56,7 @@ class AppRouter {
       ),
       GoRoute(
         path: RouteName.payment,
-        builder: (context, state) => PaymentPage(),
+        builder: (context, state) => Payment(),
       ),
       GoRoute(
         path: RouteName.orderStatus,

@@ -19,12 +19,13 @@ class DocumentRepositoryImpl implements DocumentUploadRepository {
       final response = await _api.uploadFile(
         baseUrl + docUpload,
         filePath: filePath,
-        fieldName: fileName,
+        fieldName: fileName, // This 'fileName' is the field name for the file itself, e.g. 'form16_a'
         additionalFields: {
           'userId': userId,
           'itrId': itrId,
-          'category': fileName,
-          'description': 'Document upload for $fileName',
+          // This 'fileName' is the descriptive name, using the method parameter 'fileName'
+          // which comes from event.documentCategory.name
+          'fileName': fileName,
         },
         onProgress: (sent, total) {
           print('Upload progress: ${(sent / total * 100).toStringAsFixed(1)}%');

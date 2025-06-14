@@ -96,7 +96,6 @@ class DocumentsUpload extends StatelessWidget {
         isDrawer: false,
         isResizeToAvoidBottomInset: false,
       ),
-      )
     );
   }
 
@@ -195,16 +194,55 @@ class DocumentsUpload extends StatelessWidget {
       child: CoreButton(
         text: 'Submit Documents',
         onPressed: () {
-          GoRouter.of(context).push(RouteName.payment);
-          // final state = context.read<DocumentUploadBloc>().state;
-          // if (state is DocumentUploadSuccess) {
-          //   GoRouter.of(context).push(RouteName.payment);
-          // } else {
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //     const SnackBar(
-          //         content: Text('Please upload all required documents')),
-          //   );
-          // }
+          final state = context.read<DocumentUploadBloc>().state;
+          final uploadedDocuments = state.uploadedDocuments;
+
+          // Define required document categories
+          final requiredCategories = [
+            DocumentCategory.form16a,
+            DocumentCategory.form16b,
+            DocumentCategory.aadhaar,
+            DocumentCategory.pan,
+          ];
+
+          List<String> missingDocuments = [];
+
+          for (var category in requiredCategories) {
+            if (!(uploadedDocuments.containsKey(category) &&
+                uploadedDocuments[category]!.isNotEmpty)) {
+              // Add a user-friendly name for the missing document
+              switch (category) {
+                case DocumentCategory.form16a:
+                  missingDocuments.add("Form 16A");
+                  break;
+                case DocumentCategory.form16b:
+                  missingDocuments.add("Form 16B");
+                  break;
+                case DocumentCategory.aadhaar:
+                  missingDocuments.add("Aadhaar Card");
+                  break;
+                case DocumentCategory.pan:
+                  missingDocuments.add("Pan Card");
+                  break;
+                default:
+                  missingDocuments.add(category.name); // Fallback to enum name
+              }
+            }
+          }
+
+          if (missingDocuments.isEmpty) {
+            // All required documents are uploaded
+            GoRouter.of(context).push(RouteName.payment);
+          } else {
+            // Some required documents are missing
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'Please upload all required documents: ${missingDocuments.join(', ')}.'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         },
       ),
     );

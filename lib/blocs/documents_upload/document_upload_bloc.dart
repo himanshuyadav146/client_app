@@ -96,15 +96,15 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
       // await Future.delayed(const Duration(seconds: 2));
 
 
-     // Access userId and itrId from SessionController
-     final userId = "6"; // Assuming getUserId() method exists
-     final itrId = "2"; // Assuming getItrId() method exists
+     // Using static userId and itrId as per user request
+     final String userId = "6";
+     final String itrId = "2";
 
      final response = await documentUploadRepository.uploadDocument(
           filePath: event.file.path,
           fileName: event.documentCategory.name,
-          userId: userId ?? "defaultUserId", // Provide a default or handle null appropriately
-          itrId: itrId ?? "defaultItrId", // Provide a default or handle null appropriately
+          userId: userId, // Using static value
+          itrId: itrId,   // Using static value
      );
 
       // Get the fileUrl from the response

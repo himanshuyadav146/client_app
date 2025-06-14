@@ -19,30 +19,27 @@ class DocumentRepositoryImpl implements DocumentUploadRepository {
       final response = await _api.uploadFile(
         baseUrl + docUpload,
         filePath: filePath,
-        fieldName: fileName, // This 'fileName' is the field name for the file itself, e.g. 'form16_a'
+        fieldName: fileName, // field name for file
         additionalFields: {
           'userId': userId,
           'itrId': itrId,
-          // This 'fileName' is the descriptive name, using the method parameter 'fileName'
-          // which comes from event.documentCategory.name
           'fileName': fileName,
         },
         onProgress: (sent, total) {
           print('Upload progress: ${(sent / total * 100).toStringAsFixed(1)}%');
         },
       );
-      final responseData = await response.stream.bytesToString();
 
-      if (response.statusCode == 200) {
+      // ✅ Now use response directly
+      if (response['status'] == 'success') {
         return {
           'status': 'success',
-          'message': 'Document uploaded successfully',
-          'fileName': fileName,
-          'fileUrl': 'https://allindiaitr.in/uploads/$fileName',
+          'message': response['message'],
+          'fileName': response['fileName'],
+          'fileUrl': 'https://allindiaitr.in/uploads/${response['fileName']}',
         };
       } else {
-        throw Exception(
-            'Failed to upload document: ${response.statusCode} - $responseData');
+        throw Exception('Upload failed: ${response['message']}');
       }
     } catch (e) {
       throw Exception('Failed to upload document: ${e.toString()}');

@@ -79,6 +79,104 @@ class NetworkServiceApi implements BaseApiServices {
     }
   }
 
+  // @override
+  // Future<dynamic> uploadFile(
+  //     String url, {
+  //       required String filePath,
+  //       required String fieldName,
+  //       Map<String, String>? additionalFields,
+  //       Map<String, String>? headers,
+  //       void Function(int bytesSent, int totalBytes)? onProgress,
+  //     }) async {
+  //   try {
+  //     // Create multipart request
+  //     final request = http.MultipartRequest('POST', Uri.parse(url));
+  //
+  //     // Add headers
+  //     final defaultHeaders = await _getHeaders();
+  //     // Add any specific headers passed to uploadFile first
+  //     request.headers.addAll(headers ?? {});
+  //     // Then add default headers (which might include 'Content-Type')
+  //     request.headers.addAll(defaultHeaders);
+  //
+  //     // Crucially, remove 'Content-Type' if it was part of defaultHeaders or passed headers,
+  //     // as MultipartRequest will set its own with the correct boundary.
+  //     if (request.headers.containsKey('Content-Type')) {
+  //       request.headers.remove('Content-Type');
+  //       if (kDebugMode) {
+  //         print("🔹 [Multipart Upload] Removed 'Content-Type' header to allow http.MultipartRequest to set it.");
+  //       }
+  //     }
+  //
+  //     // Add file
+  //     final file = await http.MultipartFile.fromPath(fieldName, filePath);
+  //     request.files.add(file);
+  //
+  //     // Add additional fields if provided
+  //     if (additionalFields != null && additionalFields.isNotEmpty) {
+  //       request.fields.addAll(additionalFields);
+  //     }
+  //
+  //     if (kDebugMode) {
+  //       print("🌐 [API Upload Request] POST $url");
+  //       print("📁 [Uploading File] $filePath");
+  //       if (additionalFields != null) {
+  //         print("📦 [Additional Fields] $additionalFields");
+  //       }
+  //     }
+  //
+  //     // Send the request
+  //     final streamedResponse = await request.send();
+  //
+  //     // Track progress if callback provided
+  //     if (onProgress != null) {
+  //       final contentLength = streamedResponse.contentLength ?? 0;
+  //       var bytesReceived = 0;
+  //       final responseStream = streamedResponse.stream.transform<List<int>>(
+  //         StreamTransformer.fromHandlers(
+  //           handleData: (data, sink) {
+  //             bytesReceived += data.length;
+  //             onProgress(bytesReceived, contentLength);
+  //             sink.add(data);
+  //           },
+  //         ),
+  //       );
+  //
+  //       // Convert to http.Response
+  //       final response = await http.Response.fromStream(
+  //         http.StreamedResponse(
+  //           responseStream,
+  //           streamedResponse.statusCode,
+  //           contentLength: contentLength,
+  //           headers: streamedResponse.headers,
+  //           request: streamedResponse.request,
+  //           isRedirect: streamedResponse.isRedirect,
+  //           persistentConnection: streamedResponse.persistentConnection,
+  //           reasonPhrase: streamedResponse.reasonPhrase,
+  //         ),
+  //       );
+  //
+  //       return returnResponse(response);
+  //     } else {
+  //       // No progress tracking needed
+  //       final response = await http.Response.fromStream(streamedResponse);
+  //       return returnResponse(response);
+  //     }
+  //   } on SocketException {
+  //     throw const NoInternetException();
+  //   } on TimeoutException {
+  //     throw const TimeoutException();
+  //   } on http.ClientException catch (e) {
+  //     throw ServerException(e.message);
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print('⚠️ Error uploading file: $e');
+  //     }
+  //     throw ServerException('File upload failed: ${e.toString()}');
+  //   }
+  // }
+
+
   @override
   Future<dynamic> uploadFile(
       String url, {
@@ -89,79 +187,60 @@ class NetworkServiceApi implements BaseApiServices {
         void Function(int bytesSent, int totalBytes)? onProgress,
       }) async {
     try {
-      // Create multipart request
       final request = http.MultipartRequest('POST', Uri.parse(url));
 
-      // Add headers
       final defaultHeaders = await _getHeaders();
-      // Add any specific headers passed to uploadFile first
       request.headers.addAll(headers ?? {});
-      // Then add default headers (which might include 'Content-Type')
       request.headers.addAll(defaultHeaders);
 
-      // Crucially, remove 'Content-Type' if it was part of defaultHeaders or passed headers,
-      // as MultipartRequest will set its own with the correct boundary.
-      if (request.headers.containsKey('Content-Type')) {
-        request.headers.remove('Content-Type');
-        if (kDebugMode) {
-          print("🔹 [Multipart Upload] Removed 'Content-Type' header to allow http.MultipartRequest to set it.");
-        }
-      }
+      // Remove 'content-type' to let MultipartRequest handle it
+      request.headers.removeWhere((key, _) => key.toLowerCase() == 'content-type');
 
       // Add file
       final file = await http.MultipartFile.fromPath(fieldName, filePath);
       request.files.add(file);
 
-      // Add additional fields if provided
-      if (additionalFields != null && additionalFields.isNotEmpty) {
+      // Add additional fields if any
+      if (additionalFields != null) {
         request.fields.addAll(additionalFields);
       }
 
-      if (kDebugMode) {
-        print("🌐 [API Upload Request] POST $url");
-        print("📁 [Uploading File] $filePath");
-        if (additionalFields != null) {
-          print("📦 [Additional Fields] $additionalFields");
-        }
-      }
-
-      // Send the request
+      // Send request
       final streamedResponse = await request.send();
 
-      // Track progress if callback provided
-      if (onProgress != null) {
-        final contentLength = streamedResponse.contentLength ?? 0;
-        var bytesReceived = 0;
-        final responseStream = streamedResponse.stream.transform<List<int>>(
-          StreamTransformer.fromHandlers(
-            handleData: (data, sink) {
-              bytesReceived += data.length;
-              onProgress(bytesReceived, contentLength);
-              sink.add(data);
-            },
-          ),
-        );
+      final contentLength = streamedResponse.contentLength ?? 0;
+      int bytesReceived = 0;
 
-        // Convert to http.Response
-        final response = await http.Response.fromStream(
-          http.StreamedResponse(
-            responseStream,
-            streamedResponse.statusCode,
-            contentLength: contentLength,
-            headers: streamedResponse.headers,
-            request: streamedResponse.request,
-            isRedirect: streamedResponse.isRedirect,
-            persistentConnection: streamedResponse.persistentConnection,
-            reasonPhrase: streamedResponse.reasonPhrase,
-          ),
-        );
+      // Collect bytes
+      final chunks = <int>[];
+      final completer = Completer<void>();
 
-        return returnResponse(response);
-      } else {
-        // No progress tracking needed
-        final response = await http.Response.fromStream(streamedResponse);
-        return returnResponse(response);
+      streamedResponse.stream.listen(
+            (chunk) {
+          chunks.addAll(chunk);
+          bytesReceived += chunk.length;
+          if (onProgress != null) {
+            onProgress(bytesReceived, contentLength);
+          }
+        },
+        onDone: completer.complete,
+        onError: completer.completeError,
+        cancelOnError: true,
+      );
+
+      // Wait for full stream
+      await completer.future;
+
+      // Properly decode UTF8, even if GZIP or chunked
+      final responseBody = utf8.decode(chunks);
+
+      if (kDebugMode) {
+        print('✅ Response body: $responseBody');
       }
+
+      // Parse as JSON
+      final parsedJson = jsonDecode(responseBody);
+      return parsedJson;
     } on SocketException {
       throw const NoInternetException();
     } on TimeoutException {
@@ -175,6 +254,8 @@ class NetworkServiceApi implements BaseApiServices {
       throw ServerException('File upload failed: ${e.toString()}');
     }
   }
+
+
 
 // Helper method to track upload progress
   Stream<http.StreamedResponse> _trackProgress(

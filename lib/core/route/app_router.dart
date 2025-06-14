@@ -13,7 +13,7 @@ import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: RouteName.splashScreen,
+    initialLocation: RouteName.documentsUpload,
     routes: [
       GoRoute(
         path: RouteName.splashScreen,
@@ -56,7 +56,7 @@ class AppRouter {
       ),
       GoRoute(
         path: RouteName.payment,
-        builder: (context, state) => PaymentPage(),
+        builder: (context, state) => PaymentPage(), // Corrected to PaymentPage
       ),
       GoRoute(
         path: RouteName.orderStatus,

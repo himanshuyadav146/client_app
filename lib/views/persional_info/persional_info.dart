@@ -130,7 +130,7 @@ class _PersionalInfoState extends State<PersionalInfo> {
               padding: const EdgeInsets.only(bottom: AppSizes.paddingS),
               child: DropdownButtonHideUnderline(
                 child: CoreDropdown<String>(
-                  items: const ['test1', 'test2', 'test3'],
+                  items: const ['2021-2022', '2022-2023', '2023-2024'],
                   value: _selectedFinancialYear,
                   onChanged: (value) {
                     setState(() {
@@ -321,10 +321,18 @@ class _PersionalInfoState extends State<PersionalInfo> {
     final incomeSources = bloc.getIncomeSourceByITR();
     final cachedData = bloc.cachedPersionalInfo;
 
+    // Define the list of valid financial years, matching the Dropdown items
+    final validFinancialYears = const ['2021-2022', '2022-2023', '2023-2024'];
+
     if (cachedData != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setState(() {
-          _selectedFinancialYear = cachedData.financialYear;
+          final String? cachedYear = cachedData.financialYear;
+          if (cachedYear != null && validFinancialYears.contains(cachedYear)) {
+            _selectedFinancialYear = cachedYear;
+          } else {
+            _selectedFinancialYear = null; // Set to null if cached year is invalid
+          }
           _firstName.text = cachedData.firstName!;
           _middleName.text = cachedData.middleName!;
           _lastName.text = cachedData.lastName!;

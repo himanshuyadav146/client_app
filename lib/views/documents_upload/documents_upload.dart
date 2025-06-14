@@ -12,7 +12,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/route/route_name.dart';
 import '../../core/utils/enums.dart';
-import '../../services/permission_service/permission_service.dart';
 
 class DocumentsUpload extends StatelessWidget {
   const DocumentsUpload({super.key});
@@ -99,7 +98,6 @@ class DocumentsUpload extends StatelessWidget {
         isDrawer: false,
         isResizeToAvoidBottomInset: false,
       ),
-      )
     );
   }
 
@@ -197,9 +195,7 @@ class DocumentsUpload extends StatelessWidget {
     return SafeArea(
       child: CoreButton(
         text: 'Submit Documents',
-        onPressed: () async {
-          await PermissionService.requestStoragePermission();
-
+        onPressed: () {
           final state = context.read<DocumentUploadBloc>().state;
           final uploadedDocuments = state.uploadedDocuments;
 

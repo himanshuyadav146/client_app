@@ -8,85 +8,37 @@ import '../../network/network_service_api.dart';
 class DocumentRepositoryImpl implements DocumentUploadRepository {
   final _api = NetworkServiceApi();
 
-  // @override
-  // Future<Map<String, dynamic>> uploadDocument({
-  //   required String filePath,
-  //   required String fileName,
-  //   required String userId,
-  //   required String itrId,
-  // }) async {
-  //   try {
-  //     final response = await _api.uploadFile(
-  //       baseUrl + docUpload,
-  //       filePath: filePath,
-  //       fieldName: fileName, // This 'fileName' is the field name for the file itself, e.g. 'form16_a'
-  //       additionalFields: {
-  //         'userId': userId,
-  //         'itrId': itrId,
-  //         // This 'fileName' is the descriptive name, using the method parameter 'fileName'
-  //         // which comes from event.documentCategory.name
-  //         'fileName': fileName,
-  //       },
-  //       onProgress: (sent, total) {
-  //         print('Upload progress: ${(sent / total * 100).toStringAsFixed(1)}%');
-  //       },
-  //     );
-  //     final responseData = await response.stream.bytesToString();
-  //
-  //     if (response.statusCode == 200) {
-  //       return {
-  //         'status': 'success',
-  //         'message': 'Document uploaded successfully',
-  //         'fileName': fileName,
-  //         'fileUrl': 'https://allindiaitr.in/uploads/$fileName',
-  //       };
-  //     } else {
-  //       throw Exception(
-  //           'Failed to upload document: ${response.statusCode} - $responseData');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Failed to upload document: ${e.toString()}');
-  //   }
-  // }
-
-
   @override
   Future<Map<String, dynamic>> uploadDocument({
-  required String filePath,
-  required String fileName,
-  required String userId,
-  required String itrId,
+    required String filePath,
+    required String fileName,
+    required String userId,
+    required String itrId,
   }) async {
     try {
-      // Verify file exists first
-      final file = File(filePath);
-      if (!await file.exists()) {
-        throw Exception('File does not exist at path: $filePath');
-      }
-
       final response = await _api.uploadFile(
         baseUrl + docUpload,
         filePath: filePath,
-        fieldName: 'form16_a',
+        fieldName: fileName, // This 'fileName' is the field name for the file itself, e.g. 'form16_a'
         additionalFields: {
           'userId': userId,
-          'itrId': itrId,  // Descriptive category name
-          'fileName': fileName,  // Actual filename
-          // 'fileName': file.path.split('/').last,  // Actual filename
+          'itrId': itrId,
+          // This 'fileName' is the descriptive name, using the method parameter 'fileName'
+          // which comes from event.documentCategory.name
+          'fileName': fileName,
         },
         onProgress: (sent, total) {
           print('Upload progress: ${(sent / total * 100).toStringAsFixed(1)}%');
         },
       );
-
       final responseData = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
         return {
           'status': 'success',
           'message': 'Document uploaded successfully',
-          // 'category': documentCategory,
-          'fileUrl': 'https://allindiaitr.in/uploads/${file.path.split('/').last}',
+          'fileName': fileName,
+          'fileUrl': 'https://allindiaitr.in/uploads/$fileName',
         };
       } else {
         throw Exception(
@@ -95,5 +47,37 @@ class DocumentRepositoryImpl implements DocumentUploadRepository {
     } catch (e) {
       throw Exception('Failed to upload document: ${e.toString()}');
     }
+    // try {
+    //   final url = Uri.parse(baseUrl + docUpload);
+    //   final file = File(filePath);
+    //
+    //   var request = http.MultipartRequest('POST', url)
+    //     ..headers['Authorization'] =
+    //         'Bearer eyJhbGdvIjoiSFMyNTYiLCJ0eXBlIjoiSldUIiwiZXhwaXJlIjoxNzc5NjY0OTgyfQ==.eyJpc3MiOiJhbGxpbmRpYWl0ci5pbiIsIm1vYmlsZSI6IjkwOTY0NjQ1MzQiLCJ0aW1lIjoxNzQ4MTA4MDMwfQ==.MjhjZWU0NGQyYzU2YTI2MGEwYTYyYjFhZmRlYWI0OWRhM2U2YjI1OThmZjhkYTIwZjZmNTgzNTQyOGM4ZmUzMA=='
+    //     ..fields['fileName'] = fileName
+    //     ..fields['userId'] = userId
+    //     ..fields['itrId'] = itrId
+    //     ..files.add(await http.MultipartFile.fromPath(
+    //       'form16_a',
+    //       file.path,
+    //       filename: fileName,
+    //     ));
+    //
+    //   final response = await request.send();
+    //   final responseData = await response.stream.bytesToString();
+    //
+    //   if (response.statusCode == 200) {
+    //     return {
+    //       'status': 'success',
+    //       'message': 'Document uploaded successfully',
+    //       'fileName': fileName,
+    //       'fileUrl': 'https://allindiaitr.in/uploads/$fileName',
+    //     };
+    //   } else {
+    //     throw Exception('Failed to upload document: ${response.statusCode} - $responseData');
+    //   }
+    // } catch (e) {
+    //   throw Exception('Failed to upload document: ${e.toString()}');
+    // }
   }
 }

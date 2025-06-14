@@ -22,7 +22,9 @@ class DocumentsUpload extends StatelessWidget {
       create: (context) => DocumentUploadBloc(),
       child: BlocListener<DocumentUploadBloc, DocumentUploadState>(
         listener: (context, state) {
-          if (state is DocumentUploadFailure && !state.hasBeenHandled) {
+          if (state is DocumentUploadFailure &&
+              state.documentCategory == null &&
+              !state.hasBeenHandled) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.error),
@@ -91,7 +93,7 @@ class DocumentsUpload extends StatelessWidget {
               _buildSubmitButton(context),
             ],
           ),
-        ),
+        ), // Added comma here after Padding for the body argument
         backgroundColor: kDocumentBackgroundColor,
         isDrawer: false,
         isResizeToAvoidBottomInset: false,

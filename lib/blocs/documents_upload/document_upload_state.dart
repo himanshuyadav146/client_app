@@ -114,25 +114,29 @@ class DocumentUploadSuccess extends DocumentUploadState {
 class DocumentUploadFailure extends DocumentUploadState {
   final String error;
   final bool hasBeenHandled;
+  final DocumentCategory? documentCategory; // Added field
 
   const DocumentUploadFailure({
     required this.error,
     required Map<DocumentCategory, List<UploadedDocument>> uploadedDocuments,
-    this.hasBeenHandled = false, // Default to false
+    this.documentCategory, // Added to constructor
+    this.hasBeenHandled = false,
   }) : super(uploadedDocuments: uploadedDocuments);
 
   DocumentUploadFailure copyWith({
     String? error,
     Map<DocumentCategory, List<UploadedDocument>>? uploadedDocuments,
+    DocumentCategory? documentCategory, // Added to copyWith
     bool? hasBeenHandled,
   }) {
     return DocumentUploadFailure(
       error: error ?? this.error,
       uploadedDocuments: uploadedDocuments ?? this.uploadedDocuments,
+      documentCategory: documentCategory ?? this.documentCategory, // Added to copyWith
       hasBeenHandled: hasBeenHandled ?? this.hasBeenHandled,
     );
   }
 
   @override
-  List<Object?> get props => [error, uploadedDocuments, hasBeenHandled];
+  List<Object?> get props => [error, uploadedDocuments, documentCategory, hasBeenHandled]; // Added to props
 }

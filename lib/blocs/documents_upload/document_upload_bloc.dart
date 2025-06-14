@@ -135,7 +135,12 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
       ));
     } catch (e) {
       // Emit with hasBeenHandled: false (which is the default via constructor)
-      emit(DocumentUploadFailure(error: e.toString(), uploadedDocuments: uploadedDocuments));
+      // and the specific documentCategory that failed.
+      emit(DocumentUploadFailure(
+        error: e.toString(),
+        uploadedDocuments: uploadedDocuments,
+        documentCategory: event.documentCategory,
+      ));
     }
   }
 

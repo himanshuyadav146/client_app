@@ -36,9 +36,9 @@ class DocumentsUpload extends StatelessWidget {
         child: CoreScaffold(
           title: "Documents Upload",
           appBarBackgroundColor: Theme.of(context).primaryColor,
-        appBarForegroundColor: Colors.white,
-        showBackButton: true,
-        body: Padding(
+          appBarForegroundColor: Colors.white, // Added comma here
+          showBackButton: true,
+          body: Padding(
           padding: AppPadding.paddingAllM,
           child: Column(
             children: [

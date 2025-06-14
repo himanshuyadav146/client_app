@@ -38,7 +38,7 @@ class DocumentCard extends StatelessWidget {
       listener: (context, state) {
         if (state is DocumentUploadFailure &&
             !state.hasBeenHandled &&
-            state.documentCategory == widget.documentCategory) {
+            state.documentCategory == documentCategory) { // Corrected widget.documentCategory
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error),

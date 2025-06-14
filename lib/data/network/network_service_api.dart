@@ -79,8 +79,9 @@ class NetworkServiceApi implements BaseApiServices {
     }
   }
 
+
   @override
-  Future<dynamic> uploadFile(
+  Future<http.StreamedResponse> uploadFile(
       String url, {
         required String filePath,
         required String fieldName,
@@ -92,86 +93,59 @@ class NetworkServiceApi implements BaseApiServices {
       // Create multipart request
       final request = http.MultipartRequest('POST', Uri.parse(url));
 
-      // Add headers
-      final defaultHeaders = await _getHeaders();
-      // Add any specific headers passed to uploadFile first
-      request.headers.addAll(headers ?? {});
-      // Then add default headers (which might include 'Content-Type')
-      request.headers.addAll(defaultHeaders);
+      final headers = {
+        "Content-Type": "multipart/form-data; boundary=<calculated when request is sent>",
+      };
 
-      // Crucially, remove 'Content-Type' if it was part of defaultHeaders or passed headers,
-      // as MultipartRequest will set its own with the correct boundary.
-      if (request.headers.containsKey('Content-Type')) {
-        request.headers.remove('Content-Type');
-        if (kDebugMode) {
-          print("🔹 [Multipart Upload] Removed 'Content-Type' header to allow http.MultipartRequest to set it.");
-        }
+      // Add authorization header if token exists
+      if (_sessionController.hasValidToken) {
+        headers['Authorization'] = 'Bearer ${_sessionController.authToken}';
       }
 
+      // Remove Content-Type to allow proper boundary generation
+      // request.headers.remove('Content-Type');
+
+      request.headers.addAll(headers ?? {});
       // Add file
       final file = await http.MultipartFile.fromPath(fieldName, filePath);
       request.files.add(file);
 
-      // Add additional fields if provided
-      if (additionalFields != null && additionalFields.isNotEmpty) {
+      // Add additional fields
+      if (additionalFields != null) {
         request.fields.addAll(additionalFields);
       }
 
       if (kDebugMode) {
-        print("🌐 [API Upload Request] POST $url");
-        print("📁 [Uploading File] $filePath");
-        if (additionalFields != null) {
-          print("📦 [Additional Fields] $additionalFields");
-        }
+        print("🌐 [UPLOAD] POST $url");
+        print("📁 File: $filePath");
+        print("📦 Fields: ${request.fields}");
+        print("🔑 Headers: ${request.headers}");
       }
 
-      // Send the request
-      final streamedResponse = await request.send();
+      // Send with progress tracking
+      final response = await request.send();
 
       // Track progress if callback provided
       if (onProgress != null) {
-        final contentLength = streamedResponse.contentLength ?? 0;
-        var bytesReceived = 0;
-        final responseStream = streamedResponse.stream.transform<List<int>>(
-          StreamTransformer.fromHandlers(
-            handleData: (data, sink) {
-              bytesReceived += data.length;
-              onProgress(bytesReceived, contentLength);
-              sink.add(data);
-            },
-          ),
-        );
+        final totalBytes = response.contentLength ?? 0;
+        int bytesUploaded = 0;
 
-        // Convert to http.Response
-        final response = await http.Response.fromStream(
-          http.StreamedResponse(
-            responseStream,
-            streamedResponse.statusCode,
-            contentLength: contentLength,
-            headers: streamedResponse.headers,
-            request: streamedResponse.request,
-            isRedirect: streamedResponse.isRedirect,
-            persistentConnection: streamedResponse.persistentConnection,
-            reasonPhrase: streamedResponse.reasonPhrase,
-          ),
+        response.stream.listen(
+              (List<int> chunk) {
+            bytesUploaded += chunk.length;
+            onProgress(bytesUploaded, totalBytes);
+          },
+          onError: (e) => throw e,
+          onDone: () => print('Upload complete'),
         );
-
-        return returnResponse(response);
-      } else {
-        // No progress tracking needed
-        final response = await http.Response.fromStream(streamedResponse);
-        return returnResponse(response);
       }
+
+      return response;
     } on SocketException {
       throw const NoInternetException();
     } on TimeoutException {
       throw const TimeoutException();
-    } on http.ClientException catch (e) {
-      throw ServerException(e.message);
     } catch (e) {
-      if (kDebugMode) {
-        print('⚠️ Error uploading file: $e');
-      }
       throw ServerException('File upload failed: ${e.toString()}');
     }
   }

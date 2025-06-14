@@ -130,7 +130,7 @@ class _PersionalInfoState extends State<PersionalInfo> {
               padding: const EdgeInsets.only(bottom: AppSizes.paddingS),
               child: DropdownButtonHideUnderline(
                 child: CoreDropdown<String>(
-                  items: const ['2021-2022', '2022-2023', '2023-2024'],
+                  items: const ['test1', 'test2', 'test3'],
                   value: _selectedFinancialYear,
                   onChanged: (value) {
                     setState(() {

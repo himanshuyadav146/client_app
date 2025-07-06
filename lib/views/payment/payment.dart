@@ -9,7 +9,6 @@ import '../../core/route/route_name.dart';
 import '../../core/widgets/core_button.dart';
 import '../../core/widgets/core_scafold.dart';
 
-// Renamed to PaymentPage to avoid potential naming conflicts and to signify it's a page
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
 
@@ -18,69 +17,18 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  late Razorpay _razorpay;
+
 
   @override
   void initState() {
     super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   @override
   void dispose() {
-    _razorpay.clear(); // Clear listeners
     super.dispose();
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    // Navigate to order status screen on successful payment
-    GoRouter.of(context).push(RouteName.orderStatus);
-    // You might want to pass response.paymentId or response.orderId to the next screen
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Payment Successful: ${response.paymentId}")),
-    );
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    // Show a Snackbar with the error message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Payment Failed: ${response.message}")),
-    );
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    // Show a Snackbar for external wallet interaction
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("External Wallet: ${response.walletName}")),
-    );
-  }
-
-  void _openRazorpayCheckout() {
-    // Replace 'YOUR_RAZORPAY_KEY_ID' with your actual test key ID
-    // It's recommended to fetch this from a secure configuration
-    var options = {
-      'key': 'rzp_test_XXXXXXXXXXXXXX', // IMPORTANT: Replace with your Test Key ID
-      'amount': 100, // Amount in paise (e.g., 100 paise = 1 INR)
-      'name': 'Test Order',
-      'description': 'Payment for services',
-      'prefill': {'contact': '9876543210', 'email': 'test@example.com'},
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
-
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error opening Razorpay: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error opening payment screen: ${e.toString()}")),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +71,7 @@ class _PaymentPageState extends State<PaymentPage> {
           child: CoreLevel(
             icon: Icons.person,
             textAlign: TextAlign.start,
-            text: 'Himanshu Yadav', // Placeholder, consider passing data
+            text: 'Himanshu Yadav',
             style: TextStyle(
               color: kDarkPrimaryColor,
               fontSize: 18,
@@ -235,7 +183,7 @@ class _PaymentPageState extends State<PaymentPage> {
     return SafeArea(
       child: CoreButton(
         text: 'Pay Now',
-        onPressed: _openRazorpayCheckout, // Updated onPressed
+        onPressed: (){},
       ),
     );
   }

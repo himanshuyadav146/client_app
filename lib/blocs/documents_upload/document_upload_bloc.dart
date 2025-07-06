@@ -108,7 +108,7 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
      );
 
       // Get the fileUrl from the response
-      final fileUrl = response['fileUrl'] as String?;
+      final fileUrl = getFilePath(response['filePath']);
 
       final category = event.documentCategory;
       final documents = uploadedDocuments[category] ?? [];
@@ -181,6 +181,17 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
       uploadedDocumentsList: docsInCategory,
       uploadedDocuments: currentDocuments,
     ));
+  }
+
+  String getFilePath(String path){
+    if(path.contains("/home/allindia/public_html"))
+      {
+        return path.replaceAll("/home/allindia/public_html", "https://allindiaitr.in");
+      }
+    else
+      {
+        return path;
+      }
   }
 
 }

@@ -32,12 +32,13 @@ class DocumentRepositoryImpl implements DocumentUploadRepository {
 
       // ✅ Now use response directly
       if (response['status'] == 'success') {
-        return {
-          'status': 'success',
-          'message': response['message'],
-          'fileName': response['fileName'],
-          'fileUrl': 'https://allindiaitr.in/uploads/${response['fileName']}',
-        };
+        return response;
+        // return {
+        //   'status': 'success',
+        //   'message': response['message'],
+        //   'fileName': response['fileName'],
+        //   'fileUrl': 'https://allindiaitr.in/uploads/${response['fileName']}',
+        // };
       } else {
         throw Exception('Upload failed: ${response['message']}');
       }

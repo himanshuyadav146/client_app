@@ -134,13 +134,27 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> implements PayUCheckoutProProt
     // }
   }
 
+  // This method is from PayUCheckoutProProtocol
   @override
-  onError(Map? response) {
-    emit(PayuFailure(error: response ?? "An unknown error occurred"));
-    // TODO: Handle navigation or UI updates on error
+  void onError(Map? response) {
+    //This is for PayU specific errors
+    emit(PayuFailure(error: response ?? "An unknown PayU error occurred"));
     // if (_context != null) {
     //   ScaffoldMessenger.of(_context!).showSnackBar(
-    //     SnackBar(content: Text("Error: ${response.toString()}")),
+    //     SnackBar(content: Text("PayU Error: ${response.toString()}")),
+    //   );
+    // }
+  }
+
+  // This method is from BlocBase (for BLoC internal errors)
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    // This is for BLoC internal errors
+    emit(PayuFailure(error: "BLoC error: ${error.toString()}"));
+    super.onError(error, stackTrace); // Important to call super
+    // if (_context != null) {
+    //   ScaffoldMessenger.of(_context!).showSnackBar(
+    //     SnackBar(content: Text("BLoC Error: ${error.toString()}")),
     //   );
     // }
   }

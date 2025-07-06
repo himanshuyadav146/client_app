@@ -45,5 +45,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>phonepe</string>
+		<string>paytm</string>
+		<string>tez</string>
+		<string>credpay</string>
+		<string>bhim</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to scan cards for faster payment.</string>
 </dict>
 </plist>

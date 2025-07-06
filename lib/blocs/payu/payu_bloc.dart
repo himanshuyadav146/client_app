@@ -4,17 +4,21 @@ import 'package:payu_checkoutpro_flutter/payu_checkoutpro_flutter.dart';
 import 'package:payu_checkoutpro_flutter/PayUConstantKeys.dart';
 import 'package:flutter/material.dart'; // Required for BuildContext
 
+import 'payu_callback_handler.dart'; // Import the new handler
+
 part 'payu_event.dart';
 part 'payu_state.dart';
 
-class PayuBloc extends Bloc<PayuEvent, PayuState> implements PayUCheckoutProProtocol {
+class PayuBloc extends Bloc<PayuEvent, PayuState> { // Removed "implements PayUCheckoutProProtocol"
   late PayUCheckoutProFlutter _checkoutPro;
+  late PayUCallbackHandler _callbackHandler; // Add handler instance
+
   // Store context from the widget to be used for navigation or showing snackbars
   BuildContext? _context;
 
-
   PayuBloc() : super(PayuInitial()) {
-    _checkoutPro = PayUCheckoutProFlutter(this);
+    _callbackHandler = PayUCallbackHandler(this); // Initialize handler
+    _checkoutPro = PayUCheckoutProFlutter(_callbackHandler); // Pass handler to SDK
 
     on<PayUProductionPaymentProcess>(_onPayUProductionPaymentProcess);
     on<PayUTestPaymentProcess>(_onPayUTestPaymentProcess);
@@ -27,24 +31,24 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> implements PayUCheckoutProProt
   void _onPayUProductionPaymentProcess(PayUProductionPaymentProcess event, Emitter<PayuState> emit) async {
     emit(PayuLoading());
     try {
-      // TODO: Replace with actual production payment parameters
       var paymentParams = {
-        PayUPaymentParamKey.key: "YOUR_PRODUCTION_KEY",
-        PayUPaymentParamKey.amount: "1.0",
-        PayUPaymentParamKey.productInfo: "Test Product",
-        PayUPaymentParamKey.firstName: "Test",
-        PayUPaymentParamKey.email: "test@example.com",
-        PayUPaymentParamKey.phone: "9999999999",
+        PayUPaymentParamKey.key: "YOUR_PRODUCTION_KEY", // TODO: Replace with actual key
+        PayUPaymentParamKey.amount: event.paymentParams['amount'] ?? "1.0",
+        PayUPaymentParamKey.productInfo: event.paymentParams['productInfo'] ?? "Test Product",
+        PayUPaymentParamKey.firstName: event.paymentParams['firstName'] ?? "Test",
+        PayUPaymentParamKey.email: event.paymentParams['email'] ?? "test@example.com",
+        PayUPaymentParamKey.phone: event.paymentParams['phone'] ?? "9999999999",
         PayUPaymentParamKey.ios_surl: "https://payu.herokuapp.com/ios_success",
         PayUPaymentParamKey.ios_furl: "https://payu.herokuapp.com/ios_failure",
         PayUPaymentParamKey.android_surl: "https://payu.herokuapp.com/success",
         PayUPaymentParamKey.android_furl: "https://payu.herokuapp.com/failure",
         PayUPaymentParamKey.environment: "0", // 0 for Production
         PayUPaymentParamKey.transactionId: DateTime.now().millisecondsSinceEpoch.toString(),
-        PayUPaymentParamKey.additionalParam: {},
+        PayUPaymentParamKey.additionalParam: event.paymentParams['additionalParam'] ?? {},
       };
       _checkoutPro.openCheckoutScreen(
         payUPaymentParams: paymentParams,
+        payUCheckoutProConfig: {}, // Added missing config as per your latest snippet
       );
     } catch (e) {
       emit(PayuFailure(error: e.toString()));
@@ -54,56 +58,44 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> implements PayUCheckoutProProt
   void _onPayUTestPaymentProcess(PayUTestPaymentProcess event, Emitter<PayuState> emit) async {
     emit(PayuLoading());
     try {
-      // TODO: Replace with actual test payment parameters
       var paymentParams = {
-        PayUPaymentParamKey.key: "YOUR_TEST_KEY",
-        PayUPaymentParamKey.amount: "1.0",
-        PayUPaymentParamKey.productInfo: "Test Product",
-        PayUPaymentParamKey.firstName: "Test",
-        PayUPaymentParamKey.email: "test@example.com",
-        PayUPaymentParamKey.phone: "9999999999",
+        PayUPaymentParamKey.key: "YOUR_TEST_KEY", // TODO: Replace with actual key
+        PayUPaymentParamKey.amount: event.paymentParams['amount'] ?? "1.0",
+        PayUPaymentParamKey.productInfo: event.paymentParams['productInfo'] ?? "Test Product",
+        PayUPaymentParamKey.firstName: event.paymentParams['firstName'] ?? "Test",
+        PayUPaymentParamKey.email: event.paymentParams['email'] ?? "test@example.com",
+        PayUPaymentParamKey.phone: event.paymentParams['phone'] ?? "9999999999",
         PayUPaymentParamKey.ios_surl: "https://payu.herokuapp.com/ios_success",
         PayUPaymentParamKey.ios_furl: "https://payu.herokuapp.com/ios_failure",
         PayUPaymentParamKey.android_surl: "https://payu.herokuapp.com/success",
         PayUPaymentParamKey.android_furl: "https://payu.herokuapp.com/failure",
         PayUPaymentParamKey.environment: "1", // 1 for Test
         PayUPaymentParamKey.transactionId: DateTime.now().millisecondsSinceEpoch.toString(),
-        PayUPaymentParamKey.additionalParam: {},
+        PayUPaymentParamKey.additionalParam: event.paymentParams['additionalParam'] ?? {},
       };
       _checkoutPro.openCheckoutScreen(
         payUPaymentParams: paymentParams,
+        payUCheckoutProConfig: {}, // Added missing config as per your latest snippet
       );
     } catch (e) {
       emit(PayuFailure(error: e.toString()));
     }
   }
 
-  @override
-  generateHash(Map response) {
+  // Method called by PayUCallbackHandler
+  void generatePayUHash(Map response) {
     // TODO: Implement hash generation logic by calling your backend
-    // This is a placeholder implementation
-    // In a real scenario, you would make an API call to your server
-    // to generate the hash using the data in the `response` map.
-    // The server would then return the hash, which you pass to the SDK.
-    // Example:
-    // myBackend.generateHash(response).then((hashResponse) {
-    //   _checkoutPro.hashGenerated(hash: hashResponse);
-    // }).catchError((error) {
-    //   emit(PayuFailure(error: "Hash generation failed: $error"));
-    // });
-
-    // Placeholder hash response
     Map hashResponse = {
       PayUHashConstantsKeys.hashName: response[PayUHashConstantsKeys.hashName],
       PayUHashConstantsKeys.hashString: "dummyHash", // Replace with actual hash from backend
+      // Add other hash details if required by the SDK
     };
     _checkoutPro.hashGenerated(hash: hashResponse);
   }
 
-  @override
-  onPaymentSuccess(dynamic response) {
+  // Method called by PayUCallbackHandler
+  void onPayUPaymentSuccess(dynamic response) {
     emit(PayuSuccess(response: response));
-    // TODO: Handle navigation or UI updates on success
     // if (_context != null) {
     //   GoRouter.of(_context!).push(RouteName.orderStatus);
     //   ScaffoldMessenger.of(_context!).showSnackBar(
@@ -112,10 +104,9 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> implements PayUCheckoutProProt
     // }
   }
 
-  @override
-  onPaymentFailure(dynamic response) {
+  // Method called by PayUCallbackHandler
+  void onPayUPaymentFailure(dynamic response) {
     emit(PayuFailure(error: response));
-    // TODO: Handle navigation or UI updates on failure
     // if (_context != null) {
     //   ScaffoldMessenger.of(_context!).showSnackBar(
     //     SnackBar(content: Text("Payment Failed: ${response.toString()}")),
@@ -123,10 +114,9 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> implements PayUCheckoutProProt
     // }
   }
 
-  @override
-  onPaymentCancel(Map? response) {
-    emit(PayuFailure(error: "Payment Cancelled"));
-    // TODO: Handle navigation or UI updates on cancellation
+  // Method called by PayUCallbackHandler
+  void onPayUPaymentCancel(Map? response) {
+    emit(PayuFailure(error: "Payment Cancelled by user"));
     // if (_context != null) {
     //   ScaffoldMessenger.of(_context!).showSnackBar(
     //     const SnackBar(content: Text("Payment Cancelled by user")),
@@ -134,11 +124,9 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> implements PayUCheckoutProProt
     // }
   }
 
-  // This method is from PayUCheckoutProProtocol
-  @override
-  void onError(Map? response) {
-    //This is for PayU specific errors
-    emit(PayuFailure(error: response ?? "An unknown PayU error occurred"));
+  // Method called by PayUCallbackHandler
+  void onPayUError(Map? response) {
+    emit(PayuFailure(error: response ?? {"error": "An unknown PayU error occurred"}));
     // if (_context != null) {
     //   ScaffoldMessenger.of(_context!).showSnackBar(
     //     SnackBar(content: Text("PayU Error: ${response.toString()}")),
@@ -147,15 +135,10 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> implements PayUCheckoutProProt
   }
 
   // This method is from BlocBase (for BLoC internal errors)
+  // This remains to catch any errors originating from the BLoC itself.
   @override
   void onError(Object error, StackTrace stackTrace) {
-    // This is for BLoC internal errors
-    emit(PayuFailure(error: "BLoC error: ${error.toString()}"));
+    emit(PayuFailure(error: {"error": "BLoC error: ${error.toString()}"}));
     super.onError(error, stackTrace); // Important to call super
-    // if (_context != null) {
-    //   ScaffoldMessenger.of(_context!).showSnackBar(
-    //     SnackBar(content: Text("BLoC Error: ${error.toString()}")),
-    //   );
-    // }
   }
 }

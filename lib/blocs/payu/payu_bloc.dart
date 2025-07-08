@@ -9,11 +9,10 @@ import 'payu_callback_handler.dart'; // Import the new handler
 part 'payu_event.dart';
 part 'payu_state.dart';
 
-class PayuBloc extends Bloc<PayuEvent, PayuState> { // Removed "implements PayUCheckoutProProtocol"
+class PayuBloc extends Bloc<PayuEvent, PayuState> {
   late PayUCheckoutProFlutter _checkoutPro;
-  late PayUCallbackHandler _callbackHandler; // Add handler instance
+  late PayUCallbackHandler _callbackHandler;
 
-  // Store context from the widget to be used for navigation or showing snackbars
   BuildContext? _context;
 
   PayuBloc() : super(PayuInitial()) {

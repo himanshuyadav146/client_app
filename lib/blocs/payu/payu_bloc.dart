@@ -16,8 +16,8 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
   BuildContext? _context;
 
   PayuBloc() : super(PayuInitial()) {
-    _callbackHandler = PayUCallbackHandler(this); // Initialize handler
-    _checkoutPro = PayUCheckoutProFlutter(_callbackHandler); // Pass handler to SDK
+    _callbackHandler = PayUCallbackHandler(this);
+    _checkoutPro = PayUCheckoutProFlutter(_callbackHandler);
 
     on<PayUProductionPaymentProcess>(_onPayUProductionPaymentProcess);
     on<PayUTestPaymentProcess>(_onPayUTestPaymentProcess);
@@ -58,7 +58,7 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
     emit(PayuLoading());
     try {
       var paymentParams = {
-        PayUPaymentParamKey.key: "YOUR_TEST_KEY", // TODO: Replace with actual key
+        PayUPaymentParamKey.key: "8796453", // TODO: Replace with actual key
         PayUPaymentParamKey.amount: event.paymentParams['amount'] ?? "1.0",
         PayUPaymentParamKey.productInfo: event.paymentParams['productInfo'] ?? "Test Product",
         PayUPaymentParamKey.firstName: event.paymentParams['firstName'] ?? "Test",

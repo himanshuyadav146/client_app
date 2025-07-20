@@ -37,20 +37,29 @@ class _PaymentPageState extends State<PaymentPage> {
   void _initiatePayUPayment() {
     // These are placeholder parameters.
     // In a real app, you'd fetch these dynamically or from user input/order details.
+    // final paymentParams = {
+    //   // PayUPaymentParamKey.key will be set in the BLoC based on mode
+    //   'amount': "1.0", // Example amount
+    //   'productInfo': "Product Info",
+    //   'firstName': "FirstName",
+    //   'email': "email@example.com",
+    //   'phone': "9999999999",
+    //   // SURL and FURL will be set in BLoC
+    //   // PayUPaymentParamKey.environment will be set in BLoC
+    //   // PayUPaymentParamKey.transactionId will be generated in BLoC
+    //   'additionalParam': {
+    //     // PayUAdditionalParamKeys.udf1: "udf1",
+    //     // ... other UDFs or additional params
+    //   },
+    // };
+
     final paymentParams = {
-      // PayUPaymentParamKey.key will be set in the BLoC based on mode
-      'amount': "1.0", // Example amount
-      'productInfo': "Product Info",
-      'firstName': "FirstName",
-      'email': "email@example.com",
-      'phone': "9999999999",
-      // SURL and FURL will be set in BLoC
-      // PayUPaymentParamKey.environment will be set in BLoC
-      // PayUPaymentParamKey.transactionId will be generated in BLoC
-      'additionalParam': {
-        // PayUAdditionalParamKeys.udf1: "udf1",
-        // ... other UDFs or additional params
-      },
+      'amount': '10.0', // example amount
+      'productInfo': 'Test Product',
+      'firstName': 'John',
+      'email': 'john@example.com',
+      'phone': '9876543210',
+      "userToken" : "83746sjhkdgfsjdgf874673465",
     };
 
     if (_isTestMode) {

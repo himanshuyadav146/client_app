@@ -8,12 +8,15 @@ import 'package:flutter/material.dart';
 import '../../views/important_details/inportant_details.dart';
 import '../../views/income_source/income_source.dart';
 import '../../views/index.dart';
+import '../../views/authentication/email_login_view.dart';
+import '../../views/authentication/email_signup_view.dart';
+import '../../views/authentication/forgot_password_view.dart';
 
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: RouteName.payment,
+    initialLocation: RouteName.emailLogin,
     routes: [
       GoRoute(
         path: RouteName.splashScreen,
@@ -37,6 +40,19 @@ class AppRouter {
           final phoneNumber = state.extra as String? ?? '';
           return OtpVerificationView(phoneNumber: phoneNumber);
         },
+      ),
+      // New Email Authentication Routes
+      GoRoute(
+        path: RouteName.emailLogin,
+        builder: (context, state) => const EmailLoginView(),
+      ),
+      GoRoute(
+        path: RouteName.emailSignup,
+        builder: (context, state) => const EmailSignupView(),
+      ),
+      GoRoute(
+        path: RouteName.forgotPassword,
+        builder: (context, state) => const ForgotPasswordView(),
       ),
       GoRoute(
         path: RouteName.incomeSource,

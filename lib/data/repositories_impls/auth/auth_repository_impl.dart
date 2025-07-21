@@ -2,6 +2,7 @@ import '../../../config/app_urls.dart';
 import '../../../domain/repositories/auth/auth_repository.dart';
 import '../../models/auth_models/auth_response.dart';
 import '../../models/auth_models/otp_verification_response.dart';
+import '../../models/auth_models/email_auth_response.dart';
 import '../../network/network_service_api.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -16,5 +17,24 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<OTPVerificationResponse> otpVerify(data) async {
     final res = await _api.postApi(baseUrl + verifyOTP, data);
     return OTPVerificationResponse.fromJson(res);
+  }
+
+  // New Email/Password Authentication Methods
+  @override
+  Future<EmailAuthResponse> emailLogin(data) async {
+    final res = await _api.postApi(baseUrl + emailLoginUrl, data);
+    return EmailAuthResponse.fromJson(res);
+  }
+
+  @override
+  Future<EmailAuthResponse> emailSignup(data) async {
+    final res = await _api.postApi(baseUrl + emailSignupUrl, data);
+    return EmailAuthResponse.fromJson(res);
+  }
+
+  @override
+  Future<EmailAuthResponse> forgotPassword(data) async {
+    final res = await _api.postApi(baseUrl + forgotPasswordUrl, data);
+    return EmailAuthResponse.fromJson(res);
   }
 }

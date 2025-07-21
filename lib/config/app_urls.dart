@@ -9,6 +9,12 @@ const String defaultSources = '';
 const String loginUrl = 'api/login';
 const String sendOTPUrl = 'login.php';
 const String verifyOTP = 'otpvalidate.php';
+
+// New Email/Password Authentication URLs
+const String emailLoginUrl = 'api/login.php';
+const String emailSignupUrl = 'api/signup.php';
+const String forgotPasswordUrl = 'api/forget_password.php';
+
 const String getIncomeSource = 'get_source_income.php';
 const String saveIncomeSource = 'add_itr_detail.php';
 const String getPersionalInfoURL = 'get_itrbyitrid.php';

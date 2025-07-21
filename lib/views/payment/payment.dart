@@ -35,26 +35,10 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void _initiatePayUPayment() {
-    // These are placeholder parameters.
-    // In a real app, you'd fetch these dynamically or from user input/order details.
-    // final paymentParams = {
-    //   // PayUPaymentParamKey.key will be set in the BLoC based on mode
-    //   'amount': "1.0", // Example amount
-    //   'productInfo': "Product Info",
-    //   'firstName': "FirstName",
-    //   'email': "email@example.com",
-    //   'phone': "9999999999",
-    //   // SURL and FURL will be set in BLoC
-    //   // PayUPaymentParamKey.environment will be set in BLoC
-    //   // PayUPaymentParamKey.transactionId will be generated in BLoC
-    //   'additionalParam': {
-    //     // PayUAdditionalParamKeys.udf1: "udf1",
-    //     // ... other UDFs or additional params
-    //   },
-    // };
-
+    print("Initiating PayU Payment in ${_isTestMode ? 'TEST' : 'PRODUCTION'} mode");
+    
     final paymentParams = {
-      'amount': '10.0', // example amount
+      'amount': '1.0', // Use 1.0 for test mode
       'productInfo': 'Test Product',
       'firstName': 'John',
       'email': 'john@example.com',
@@ -62,9 +46,13 @@ class _PaymentPageState extends State<PaymentPage> {
       "userToken" : "83746sjhkdgfsjdgf874673465",
     };
 
+    print("Payment Parameters: $paymentParams");
+
     if (_isTestMode) {
+      print("Adding PayUTestPaymentProcess event");
       _payuBloc.add(PayUTestPaymentProcess(paymentParams: paymentParams));
     } else {
+      print("Adding PayUProductionPaymentProcess event");
       _payuBloc.add(PayUProductionPaymentProcess(paymentParams: paymentParams));
     }
   }
@@ -87,7 +75,10 @@ class _PaymentPageState extends State<PaymentPage> {
         },
         body: BlocListener<PayuBloc, PayuState>(
           listener: (context, state) {
+            print("PayU State Changed: $state");
+            
             if (state is PayuSuccess) {
+              print("Payment Success: ${state.response}");
               GoRouter.of(context).push(RouteName.orderStatus);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -95,10 +86,13 @@ class _PaymentPageState extends State<PaymentPage> {
                         "Payment Successful: ${state.response.toString()}")),
               );
             } else if (state is PayuFailure) {
+              print("Payment Failure: ${state.error}");
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                     content: Text("Payment Failed: ${state.error.toString()}")),
               );
+            } else if (state is PayuLoading) {
+              print("Payment Loading...");
             }
           },
           child: Padding(

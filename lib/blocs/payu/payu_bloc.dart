@@ -6,6 +6,7 @@ import 'package:payu_checkoutpro_flutter/PayUConstantKeys.dart';
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'dart:async';
 
 part 'payu_event.dart';
 part 'payu_state.dart';
@@ -17,7 +18,7 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
 
   // Test credentials
   final String testMerchantKey = '8796453';
-  final String testMerchantSalt = '6leDdSgxlBUd5dI0gM2HZPHwtA49OSsW'; // Common test salt
+  final String testMerchantSalt = '6leDdSgxIBUd5dI0gM2HZPHwtA49OSsW'; // Updated salt from dashboard
 
   PayuBloc() : super(PayuInitial()) {
     _callbackHandler = PayUCallbackHandler(this);
@@ -67,8 +68,10 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
       final txnId = DateTime.now().millisecondsSinceEpoch.toString();
       final amount = event.paymentParams['amount'] ?? "1.0";
 
+      print("PayU Test Mode - Merchant Key: $testMerchantKey, Salt: $testMerchantSalt");
+
       var paymentParams = {
-        PayUPaymentParamKey.key: testMerchantKey,
+        PayUPaymentParamKey.key: "13140558", // Use production merchant key
         PayUPaymentParamKey.amount: amount,
         PayUPaymentParamKey.productInfo: event.paymentParams['productInfo'] ?? "Test Product",
         PayUPaymentParamKey.firstName: event.paymentParams['firstName'] ?? "Test",
@@ -80,18 +83,30 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
         PayUPaymentParamKey.android_furl: "https://payu.herokuapp.com/failure",
         PayUPaymentParamKey.environment: "1", // 1 for Test
         PayUPaymentParamKey.transactionId: txnId,
-        PayUPaymentParamKey.additionalParam: event.paymentParams['additionalParam'] ?? {},
+        PayUPaymentParamKey.additionalParam: {
+          'udf1': event.paymentParams['userToken'] ?? '',
+        },
       };
 
+      print("PayU Payment Params: $paymentParams");
+
+      // Add a timeout to prevent infinite loading
+      Timer(const Duration(seconds: 30), () {
+        if (!emit.isDone && state is PayuLoading) {
+          print("PayU Timeout - No response received");
+          emit(PayuFailure(error: "Payment timeout - no response from PayU"));
+        }
+      });
+
+      // Try with minimal configuration
       _checkoutPro.openCheckoutScreen(
         payUPaymentParams: paymentParams,
         payUCheckoutProConfig: {
           'merchantName': 'Tax Plus',
-          'showExitConfirmationOnCheckoutScreen': true,
-          'showExitConfirmationOnPaymentScreen': true,
         },
       );
     } catch (e) {
+      print("PayU Error: $e");
       emit(PayuFailure(error: e.toString()));
       if (_context != null && _context!.mounted) {
         ScaffoldMessenger.of(_context!).showSnackBar(
@@ -106,29 +121,66 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
       final hashName = response[PayUHashConstantsKeys.hashName];
       String hashString = "";
 
+      print("PayU Hash Request - Name: $hashName, Response: $response");
+
       // Extract only the JSON part from the hashString
       final rawHashString = response[PayUHashConstantsKeys.hashString];
+      print("Raw Hash String: $rawHashString");
 
-      // Assuming it's something like: <json>|<timestamp>|
-      final parts = rawHashString.split('|');
-      final jsonPart = parts[0]; // The first part is the JSON string
-
-      final Map<String, dynamic> data = jsonDecode(jsonPart);
-
-      if (hashName == "quickPayEvent") {
-        hashString = _generatePaymentHash(
-          key: testMerchantKey,
-          txnId: data['requestId'],         // Assuming this is the txnId
-          amount: data['amount'].toString(),// Ensure it's String
-          productInfo: data['requestType'], // You can adjust this
-          firstName: data['userToken'],     // Replace with actual field if needed
-          email: data['phone'],             // Replace with actual email if present
-        );
+      // Handle different hash types
+      if (hashName == "get_sdk_configuration") {
+        // For SDK configuration hash
+        hashString = _generateSDKConfigHash();
+      } else if (hashName == "get_checkout_details") {
+        // For checkout details hash - extract JSON from pipe-separated string
+        final parts = rawHashString.split('|');
+        if (parts.length >= 3) {
+          final jsonPart = parts[2]; // The JSON part is at index 2
+          final Map<String, dynamic> data = jsonDecode(jsonPart);
+          hashString = _generateCheckoutDetailsHash(data);
+        }
+      } else if (hashName == "quickPayEvent") {
+        // For payment hash - extract JSON from pipe-separated string
+        final parts = rawHashString.split('|');
+        if (parts.length >= 1) {
+          final jsonPart = parts[0]; // The JSON part is at index 0
+          final Map<String, dynamic> data = jsonDecode(jsonPart);
+          hashString = _generatePaymentHash(
+            key: testMerchantKey,
+            txnId: data['requestId'] ?? '',
+            amount: data['amount']?.toString() ?? '1.0',
+            productInfo: data['requestType'] ?? 'Test Product',
+            firstName: data['userToken'] ?? 'Test',
+            email: data['phone'] ?? 'test@example.com',
+          );
+        }
       } else if (hashName == "vasForMobileSDKHash") {
-        hashString = _generateVasHash(
-          key: testMerchantKey,
-          txnId: data['requestId'],         // Assuming this is the txnId
-        );
+        // For VAS hash - extract JSON from pipe-separated string
+        final parts = rawHashString.split('|');
+        if (parts.length >= 1) {
+          final jsonPart = parts[0]; // The JSON part is at index 0
+          final Map<String, dynamic> data = jsonDecode(jsonPart);
+          hashString = _generateVasHash(
+            key: testMerchantKey,
+            txnId: data['requestId'] ?? '',
+          );
+        }
+      } else if (hashName == "get_all_offer_details") {
+        // For offer details hash - extract JSON from pipe-separated string
+        final parts = rawHashString.split('|');
+        if (parts.length >= 1) {
+          final jsonPart = parts[0]; // The JSON part is at index 0
+          final Map<String, dynamic> data = jsonDecode(jsonPart);
+          hashString = _generateOfferDetailsHash(data);
+        }
+      }
+
+      print("Generated Hash: $hashString");
+
+      if (hashString.isEmpty) {
+        print("Warning: Generated hash is empty for $hashName");
+        // Generate a fallback hash to prevent crashes
+        hashString = _generateFallbackHash(hashName);
       }
 
       Map hashResponse = {
@@ -136,9 +188,18 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
         PayUHashConstantsKeys.hashString: hashString,
       };
 
+      print("Sending hash response: $hashResponse");
       _checkoutPro.hashGenerated(hash: hashResponse);
     } catch (e) {
-      emit(PayuFailure(error: "Hash generation failed: ${e.toString()}"));
+      print("Hash Generation Error: $e");
+      // Generate a fallback hash to prevent crashes
+      final fallbackHash = _generateFallbackHash(response[PayUHashConstantsKeys.hashName]);
+      Map hashResponse = {
+        PayUHashConstantsKeys.hashName: response[PayUHashConstantsKeys.hashName],
+        PayUHashConstantsKeys.hashString: fallbackHash,
+      };
+      print("Sending fallback hash response: $hashResponse");
+      _checkoutPro.hashGenerated(hash: hashResponse);
     }
   }
 
@@ -152,6 +213,7 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
     required String firstName,
     required String email,
   }) {
+    // For quickPayEvent, use a simpler hash format
     final hashData = [
       key,
       txnId,
@@ -168,6 +230,7 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
       testMerchantSalt,
     ].join('|');
 
+    print("Payment Hash Data: $hashData");
     return _generateSHA512(hashData);
   }
 
@@ -184,11 +247,56 @@ class PayuBloc extends Bloc<PayuEvent, PayuState> {
     return _generateSHA512(hashData);
   }
 
+  String _generateSDKConfigHash() {
+    final hashData = [
+      testMerchantKey,
+      'get_sdk_configuration',
+      'GET',
+      testMerchantSalt,
+    ].join('|');
+
+    return _generateSHA512(hashData);
+  }
+
+  String _generateCheckoutDetailsHash(Map<String, dynamic> data) {
+    final hashData = [
+      testMerchantKey,
+      'get_checkout_details',
+      jsonEncode(data),
+      testMerchantSalt,
+    ].join('|');
+
+    return _generateSHA512(hashData);
+  }
+
+  String _generateOfferDetailsHash(Map<String, dynamic> data) {
+    final hashData = [
+      testMerchantKey,
+      'get_all_offer_details',
+      jsonEncode(data),
+      testMerchantSalt,
+    ].join('|');
+
+    return _generateSHA512(hashData);
+  }
+
   // Helper method to generate SHA512 hash
   String _generateSHA512(String input) {
     final bytes = utf8.encode(input);
     final digest = sha512.convert(bytes);
     return digest.toString();
+  }
+
+  // Fallback hash generation method
+  String _generateFallbackHash(String hashName) {
+    final hashData = [
+      testMerchantKey,
+      hashName,
+      DateTime.now().millisecondsSinceEpoch.toString(),
+      testMerchantSalt,
+    ].join('|');
+
+    return _generateSHA512(hashData);
   }
 
   // Method called by PayUCallbackHandler

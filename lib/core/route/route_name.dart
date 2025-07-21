@@ -6,6 +6,11 @@ class RouteName {
   //authentication
   static const String otpVerification = '/otp-verification';
   static const String phoneNo = '/phone-no';
+  
+  // New Email Authentication Routes
+  static const String emailLogin = '/email-login';
+  static const String emailSignup = '/email-signup';
+  static const String forgotPassword = '/forgot-password';
   //products
   static const String productDetails = '/product-details';
   //other

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:client_app/data/models/auth_models/auth_response.dart';
 import 'package:client_app/data/models/auth_models/otp_verification_response.dart';
+import 'package:client_app/data/models/auth_models/email_auth_response.dart';
 import '../storage/local_storage.dart';
 
 class SessionController {
@@ -48,6 +49,20 @@ class SessionController {
     } catch (e) {
       print('Error saving session: $e');
       throw Exception('Failed to save user session');
+    }
+  }
+
+  Future<void> saveEmailUserSession(EmailAuthResponse response) async {
+    try {
+      _authToken = response.token;
+      isLoggedIn = true;
+
+      await _localStorage.setValues('user', jsonEncode(response.toJson()));
+      await _localStorage.setValues('isLoggedIn', 'true');
+      await _localStorage.setValues('auth_token', response.token ?? '');
+    } catch (e) {
+      print('Error saving email session: $e');
+      throw Exception('Failed to save email user session');
     }
   }
 

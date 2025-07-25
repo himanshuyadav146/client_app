@@ -25,6 +25,7 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
     on<PickDocument>(_onPickDocument);
     on<UploadDocument>(_onUploadDocument);
     on<RemoveDocument>(_onRemoveDocument);
+    on<DeleteDocument>(_onDeleteDocument);
     on<MarkUploadErrorAsHandled>(_onMarkUploadErrorAsHandled); // Register new event handler
   }
 
@@ -92,19 +93,22 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
         uploadedDocuments: uploadedDocuments,
       ));
 
+      // Fetch userId and itrId from SessionController
+      final String? userId = sessionController.getUserId();
+      final String? itrId = await sessionController.getITRID();
+      if (userId == null || itrId == null) {
+        throw Exception('User ID or ITR ID not found in session');
+      }
+
       // // Simulated delay for upload
       // await Future.delayed(const Duration(seconds: 2));
 
 
-     // Using static userId and itrId as per user request
-     final String userId = "6";
-     final String itrId = "2";
-
      final response = await documentUploadRepository.uploadDocument(
           filePath: event.file.path,
           fileName: event.documentCategory.name,
-          userId: userId, // Using static value
-          itrId: itrId,   // Using static value
+          userId: userId,
+          itrId: itrId,
      );
 
       // Get the fileUrl from the response
@@ -140,6 +144,47 @@ class DocumentUploadBloc extends Bloc<DocumentUploadEvent, DocumentUploadState> 
         error: e.toString(),
         uploadedDocuments: uploadedDocuments,
         documentCategory: event.documentCategory,
+      ));
+    }
+  }
+
+  Future<void> _onDeleteDocument(DeleteDocument event, Emitter<DocumentUploadState> emit) async {
+    try {
+      emit(DocumentUploading(
+        documentCategory: event.category,
+        uploadedDocuments: uploadedDocuments,
+      ));
+      // Fetch userId and itrId from SessionController
+      final String? userId = sessionController.getUserId();
+      final String? itrId = await sessionController.getITRID();
+      if (userId == null || itrId == null) {
+        throw Exception('User ID or ITR ID not found in session');
+      }
+      final String docId = event.docId;
+      final String fileName = event.fileName;
+      final String token = event.token;
+      await documentUploadRepository.deleteDocument(
+        docId: docId,
+        userId: userId,
+        itrId: itrId,
+        fileName: fileName,
+        token: token,
+      );
+      // Remove from local list
+      final currentDocuments = Map<DocumentCategory, List<UploadedDocument>>.from(state.uploadedDocuments);
+      final docsInCategory = List<UploadedDocument>.from(currentDocuments[event.category] ?? []);
+      docsInCategory.removeWhere((doc) => doc.documentUrl == event.document.documentUrl);
+      currentDocuments[event.category] = docsInCategory;
+      emit(DocumentUploadSuccess(
+        documentCategory: event.category,
+        uploadedDocumentsList: docsInCategory,
+        uploadedDocuments: currentDocuments,
+      ));
+    } catch (e) {
+      emit(DocumentUploadFailure(
+        error: e.toString(),
+        uploadedDocuments: state.uploadedDocuments,
+        documentCategory: event.category,
       ));
     }
   }

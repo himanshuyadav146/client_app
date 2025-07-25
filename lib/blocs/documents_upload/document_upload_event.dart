@@ -51,3 +51,26 @@ class RemoveDocument extends DocumentUploadEvent {
 }
 
 class MarkUploadErrorAsHandled extends DocumentUploadEvent {}
+
+class DeleteDocument extends DocumentUploadEvent {
+  final DocumentCategory category;
+  final UploadedDocument document;
+  final String docId;
+  final String userId;
+  final String itrId;
+  final String fileName;
+  final String token;
+
+  DeleteDocument({
+    required this.category,
+    required this.document,
+    required this.docId,
+    required this.userId,
+    required this.itrId,
+    required this.fileName,
+    required this.token,
+  });
+
+  @override
+  List<Object?> get props => [category, document, docId, userId, itrId, fileName, token];
+}

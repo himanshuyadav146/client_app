@@ -6,4 +6,12 @@ abstract class DocumentUploadRepository{
     required String userId,
     required String itrId,
   });
+
+  Future<Map<String, dynamic>> deleteDocument({
+    required String docId,
+    required String userId,
+    required String itrId,
+    required String fileName,
+    required String token,
+  });
 }

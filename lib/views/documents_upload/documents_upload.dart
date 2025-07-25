@@ -10,8 +10,12 @@ import 'package:client_app/core/widgets/core_scafold.dart';
 import 'package:client_app/core/widgets/document_card.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/di/di_container.dart';
 import '../../core/route/route_name.dart';
 import '../../core/utils/enums.dart';
+import 'package:get_it/get_it.dart';
+
+import '../../services/session_manager/session_manager.dart';
 
 class DocumentsUpload extends StatelessWidget {
   const DocumentsUpload({super.key});
@@ -164,11 +168,23 @@ class DocumentsUpload extends StatelessWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.close, size: 18),
-                      onPressed: () {
+                      onPressed: () async {
+                        final session = getIt<SessionController>();
+                        final token = session.authToken ?? '';
+                        // TODO: Replace with actual values from your data model
+                        final docId = '4'; // You should get this from your document model or API
+                        final userId = '2'; // You should get this from session or document
+                        final itrId = '5'; // You should get this from session or document
+                        final fileName = doc.documentUrl.split('/').last;
                         context.read<DocumentUploadBloc>().add(
-                          RemoveDocument(
+                          DeleteDocument(
                             category: category,
                             document: doc,
+                            docId: docId,
+                            userId: '', // Will be fetched in BLoC
+                            itrId: '', // Will be fetched in BLoC
+                            fileName: fileName,
+                            token: token,
                           ),
                         );
                       },

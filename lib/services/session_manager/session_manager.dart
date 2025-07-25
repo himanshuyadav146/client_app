@@ -7,7 +7,6 @@ import '../storage/local_storage.dart';
 class SessionController {
   static final SessionController _instance = SessionController._internal();
   final LocalStorage _localStorage = LocalStorage();
-  // AuthResponse? authResponse;
   OTPVerificationResponse? authResponse;
   bool isLoggedIn = false;
   String? _authToken;

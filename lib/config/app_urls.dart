@@ -7,15 +7,15 @@ const String defaultSources = '';
 
 // End URLs
 const String loginUrl = 'api/login';
-const String sendOTPUrl = 'login.php';
-const String verifyOTP = 'otpvalidate.php';
+const String sendOTPUrl = 'api/login.php';
+const String verifyOTP = 'api/otpvalidate.php';
 
 // New Email/Password Authentication URLs
 const String emailLoginUrl = 'api/login.php';
 const String emailSignupUrl = 'api/signup.php';
 const String forgotPasswordUrl = 'api/forget_password.php';
 
-const String getIncomeSource = 'get_source_income.php';
-const String saveIncomeSource = 'add_itr_detail.php';
-const String getPersionalInfoURL = 'get_itrbyitrid.php';
-const String docUpload = 'add_documents.php';
+const String getIncomeSource = 'api/get_source_income.php';
+const String saveIncomeSource = 'api/add_itr_detail.php';
+const String getPersionalInfoURL = 'api/get_itrbyitrid.php';
+const String docUpload = 'api/add_documents.php';

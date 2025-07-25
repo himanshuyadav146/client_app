@@ -2,6 +2,8 @@ import 'package:client_app/core/index.dart';
 import 'package:client_app/views/index.dart';
 import 'package:flutter/material.dart';
 
+import '../../services/session_manager/session_manager.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -85,11 +87,13 @@ class ProfileScreen extends StatelessWidget {
             _buildListTile(
               title: 'Logout',
               onTap: () {
-                // Logout and go back to login screen
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => PhoneNumberView()),
-                );
+                // Clear session and navigate to login screen
+                SessionController().clearSession().then((_) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => const PhoneNumberView()),
+                    (route) => false,
+                  );
+                });
               },
               leadingIcon: const Icon(Icons.exit_to_app, color: Colors.red),
             ),

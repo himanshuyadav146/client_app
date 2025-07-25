@@ -18,7 +18,7 @@ class EmailAuthResponse {
 
 @JsonSerializable(explicitToJson: true)
 class UserData {
-  int? id;
+  String? id;
   String? name;
   String? email;
   String? mobile;

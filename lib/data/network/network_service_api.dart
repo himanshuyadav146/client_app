@@ -294,9 +294,9 @@ class NetworkServiceApi implements BaseApiServices {
     headers['Authorization'] = 'Bearer eyJhbGdvIjoiSFMyNTYiLCJ0eXBlIjoiSldUIiwiZXhwaXJlIjoxNzc5NjY0OTgyfQ==.eyJpc3MiOiJhbGxpbmRpYWl0ci5pbiIsIm1vYmlsZSI6IjkwOTY0NjQ1MzQiLCJ0aW1lIjoxNzQ4MTA4MDMwfQ==.MjhjZWU0NGQyYzU2YTI2MGEwYTYyYjFhZmRlYWI0OWRhM2U2YjI1OThmZjhkYTIwZjZmNTgzNTQyOGM4ZmUzMA==';
 
     // Add authorization header if token exists
-    if (_sessionController.hasValidToken) {
-      headers['Authorization'] = 'Bearer ${_sessionController.authToken}';
-    }
+    // if (_sessionController.hasValidToken) {
+    //   headers['Authorization'] = 'Bearer ${_sessionController.authToken}';
+    // }
 
     if (kDebugMode) {
       print("🔹 [HEADERS] $headers");

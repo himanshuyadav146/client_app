@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
         body: InkWell(
           onTap: () {
             // Navigator.pushNamed(context, RouteName.phoneNo);
-            Navigator.of(context).pushNamed(RouteName.phoneNo);
+            Navigator.of(context).pushNamed(RouteName.emailLogin);
           },
           child: Center(
             child: Text('Welcome to Splash Screen'),

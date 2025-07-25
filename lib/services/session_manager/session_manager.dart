@@ -8,6 +8,7 @@ class SessionController {
   static final SessionController _instance = SessionController._internal();
   final LocalStorage _localStorage = LocalStorage();
   OTPVerificationResponse? authResponse;
+  EmailAuthResponse? emailAuthResponse; // <-- Add this line
   bool isLoggedIn = false;
   String? _authToken;
 
@@ -25,7 +26,21 @@ class SessionController {
       final token = await _localStorage.getValues('auth_token');
 
       if (userData != null) {
-        authResponse = OTPVerificationResponse.fromJson(jsonDecode(userData));
+        final Map<String, dynamic> json = jsonDecode(userData);
+        // Detect type by checking for known keys
+        if (json.containsKey('data')) {
+          authResponse = OTPVerificationResponse.fromJson(json);
+          emailAuthResponse = null;
+        } else if (json.containsKey('user')) {
+          emailAuthResponse = EmailAuthResponse.fromJson(json);
+          authResponse = null;
+        } else {
+          authResponse = null;
+          emailAuthResponse = null;
+        }
+      } else {
+        authResponse = null;
+        emailAuthResponse = null;
       }
 
       isLoggedIn = isLogin == 'true';
@@ -39,6 +54,7 @@ class SessionController {
   Future<void> saveUserSession(OTPVerificationResponse response) async {
     try {
       authResponse = response;
+      emailAuthResponse = null;
       _authToken = response.token; // Assuming token is in AuthResponse
       isLoggedIn = true;
 
@@ -53,6 +69,8 @@ class SessionController {
 
   Future<void> saveEmailUserSession(EmailAuthResponse response) async {
     try {
+      emailAuthResponse = response;
+      authResponse = null;
       _authToken = response.token;
       isLoggedIn = true;
 
@@ -70,7 +88,17 @@ class SessionController {
       final user = await _localStorage.getValues('user');
       final isLogin = await _localStorage.getValues('isLoggedIn');
       if (user != null) {
-        authResponse = OTPVerificationResponse.fromJson(jsonDecode(user));
+        final Map<String, dynamic> json = jsonDecode(user);
+        if (json.containsKey('data')) {
+          authResponse = OTPVerificationResponse.fromJson(json);
+          emailAuthResponse = null;
+        } else if (json.containsKey('user')) {
+          emailAuthResponse = EmailAuthResponse.fromJson(json);
+          authResponse = null;
+        } else {
+          authResponse = null;
+          emailAuthResponse = null;
+        }
         isLoggedIn = isLogin == 'true' ? true : false;
       }
     } catch (e) {
@@ -96,8 +124,12 @@ class SessionController {
   }
 
   String? getUserId() {
-    if (hasValidToken && authResponse != null) {
-      return authResponse!.data?.id;
+    if (hasValidToken) {
+      if (authResponse != null) {
+        return authResponse!.data?.id;
+      } else if (emailAuthResponse != null) {
+        return emailAuthResponse!.user?.id;
+      }
     }
     return null;
   }
@@ -110,6 +142,7 @@ class SessionController {
       await _localStorage.removeValues('auth_token');
 
       authResponse = null;
+      emailAuthResponse = null;
       _authToken = null;
       isLoggedIn = false;
     } catch (e) {

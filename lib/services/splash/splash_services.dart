@@ -14,11 +14,11 @@ class SplashServices {
             () => GoRouter.of(context).go(RouteName.tabbarScreen));
       } else {
         Timer(const Duration(seconds: 3),
-            () => GoRouter.of(context).go(RouteName.phoneNo));
+            () => GoRouter.of(context).go(RouteName.emailLogin));
       }
     }).onError((error, stackTrace) {
       Timer(const Duration(seconds: 3),
-          () => GoRouter.of(context).go(RouteName.phoneNo));
+          () => GoRouter.of(context).go(RouteName.emailLogin));
     });
   }
 }

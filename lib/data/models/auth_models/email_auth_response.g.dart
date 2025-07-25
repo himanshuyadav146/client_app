@@ -25,7 +25,7 @@ Map<String, dynamic> _$EmailAuthResponseToJson(EmailAuthResponse instance) =>
     };
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
-      id: (json['id'] as num?)?.toInt(),
+      id: (json['id'] as String?),
       name: json['name'] as String?,
       email: json['email'] as String?,
       mobile: json['mobile'] as String?,

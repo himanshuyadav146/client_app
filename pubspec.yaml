@@ -57,6 +57,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   image_picker: ^1.1.2
   file_picker: ^10.1.9
+  lottie: ^3.1.2
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +84,7 @@ flutter:
     - assets/verify.svg
     - assets/banner.svg
     - assets/upload.svg
+    - assets/animations/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

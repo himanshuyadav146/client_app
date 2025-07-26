@@ -1,6 +1,7 @@
 import 'package:client_app/core/index.dart';
 import 'package:client_app/views/index.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../services/session_manager/session_manager.dart';
 
@@ -89,10 +90,7 @@ class ProfileScreen extends StatelessWidget {
               onTap: () {
                 // Clear session and navigate to login screen
                 SessionController().clearSession().then((_) {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const PhoneNumberView()),
-                    (route) => false,
-                  );
+                  GoRouter.of(context).go(RouteName.emailLogin);
                 });
               },
               leadingIcon: const Icon(Icons.exit_to_app, color: Colors.red),

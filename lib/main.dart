@@ -10,6 +10,8 @@ import 'blocs/auth/login_bloc.dart';
 import 'blocs/income_source/income_source_bloc.dart';
 import 'blocs/persional_info/persional_info_bloc.dart';
 import 'core/di/di_config.dart';
+import 'core/widgets/global_loader.dart';
+import 'data/network/network_service_api.dart';
 
 GetIt getIt = GetIt.instance;
 
@@ -27,22 +29,39 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // Provide BLoCs using getIt for consistency
         BlocProvider<LoginBloc>(
           create: (context) => getIt<LoginBloc>(),
-        ),
-        BlocProvider<IncomeSourceBloc>(
-          create: (context) => getIt<IncomeSourceBloc>(),
         ),
         BlocProvider<PersionalInfoBloc>(
           create: (context) => getIt<PersionalInfoBloc>(),
         ),
+        ChangeNotifierProvider<GlobalLoaderProvider>(
+          create: (_) => GlobalLoaderProvider(),
+        ),
       ],
-      child: MaterialApp.router(
-        title: 'Tax App',
-        theme: AppTheme.lightTheme,
-        routerConfig: AppRouter.router,
-        debugShowCheckedModeBanner: false,
+      child: Builder(
+        builder: (context) {
+          // Set the global loader provider after the first frame
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final provider = Provider.of<GlobalLoaderProvider>(context, listen: false);
+            NetworkServiceApi.setGlobalLoader(provider);
+          });
+          return GlobalLoader(
+            notifier: Provider.of<GlobalLoaderProvider>(context, listen: false),
+            child: MaterialApp.router(
+              title: 'Tax App',
+              theme: AppTheme.lightTheme,
+              routerConfig: AppRouter.router,
+              debugShowCheckedModeBanner: false,
+              builder: (context, child) => Stack(
+                children: [
+                  child!,
+                  const GlobalLoaderOverlay(),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

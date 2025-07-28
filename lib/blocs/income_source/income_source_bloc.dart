@@ -43,7 +43,7 @@ class IncomeSourceBloc extends Bloc<IncomeSourceEvent, IncomeSourceState> {
     // Load personal info
     try {
       // personalInfo = await repository.getPersionalInfo(2); // TODO - need to remove hardcoded value
-      personalInfo = await repository.getPersionalInfo(itrId as int);
+      personalInfo = await repository.getPersionalInfo(itrId ?? '');
     } catch (e) {
       personalInfoError = 'Failed to load personal info';
       debugPrint('Personal info error: $e');

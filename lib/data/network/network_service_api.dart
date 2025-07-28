@@ -7,9 +7,15 @@ import '../../core/error/exceptions.dart';
 import 'package:http/http.dart' as http;
 
 import '../../services/session_manager/session_manager.dart';
+import 'package:client_app/core/widgets/global_loader.dart';
 
 class NetworkServiceApi implements BaseApiServices {
   final SessionController _sessionController = SessionController();
+  static GlobalLoaderProvider? globalLoaderProvider;
+
+  static void setGlobalLoader(GlobalLoaderProvider provider) {
+    globalLoaderProvider = provider;
+  }
 
   @override
   Future getApi(
@@ -17,6 +23,7 @@ class NetworkServiceApi implements BaseApiServices {
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
+      globalLoaderProvider?.show();
       final headers = await _getHeaders();
       Uri uri = Uri.parse(url);
       if (queryParameters != null && queryParameters.isNotEmpty) {
@@ -25,7 +32,6 @@ class NetworkServiceApi implements BaseApiServices {
       final response = await http
           .get(
             uri,
-            // Uri.parse(url),
             headers: headers,
           )
           .timeout(const Duration(seconds: 30));
@@ -37,6 +43,8 @@ class NetworkServiceApi implements BaseApiServices {
       throw const TimeoutException();
     } on http.ClientException catch (e) {
       throw ServerException(e.message);
+    } finally {
+      globalLoaderProvider?.hide();
     }
   }
 
@@ -47,6 +55,7 @@ class NetworkServiceApi implements BaseApiServices {
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
+      globalLoaderProvider?.show();
       final headers = await _getHeaders();
       Uri uri = Uri.parse(url);
       if (queryParameters != null && queryParameters.isNotEmpty) {
@@ -54,7 +63,7 @@ class NetworkServiceApi implements BaseApiServices {
       }
 
       if (kDebugMode) {
-        print("🌐 [API Request] POST ${uri.toString()}");
+        print("🌐 [API Request] POST  [32m${uri.toString()} [0m");
         if (data != null) print("📦 [Request Body] ${jsonEncode(data)}");
         if (queryParameters != null) {
           print("🔍 [Query Params] $queryParameters");
@@ -76,6 +85,8 @@ class NetworkServiceApi implements BaseApiServices {
       throw const TimeoutException();
     } on http.ClientException catch (e) {
       throw ServerException(e.message);
+    } finally {
+      globalLoaderProvider?.hide();
     }
   }
 
@@ -187,6 +198,7 @@ class NetworkServiceApi implements BaseApiServices {
         void Function(int bytesSent, int totalBytes)? onProgress,
       }) async {
     try {
+      globalLoaderProvider?.show();
       final request = http.MultipartRequest('POST', Uri.parse(url));
 
       final defaultHeaders = await _getHeaders();
@@ -252,6 +264,8 @@ class NetworkServiceApi implements BaseApiServices {
         print('⚠️ Error uploading file: $e');
       }
       throw ServerException('File upload failed: ${e.toString()}');
+    } finally {
+      globalLoaderProvider?.hide();
     }
   }
 

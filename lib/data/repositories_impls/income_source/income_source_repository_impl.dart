@@ -22,7 +22,7 @@ class IncomeSourceRepositoryImpl implements IncomeSourceRepository {
   }
 
   @override
-  Future<SourceResponse> getPersionalInfo(int itrId) async {
+  Future<SourceResponse> getPersionalInfo(String itrId) async {
     final params = {'itrId': itrId.toString()};
     final res = await _api.getApi(baseUrl + getPersionalInfoURL,
         queryParameters: params );

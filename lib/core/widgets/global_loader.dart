@@ -40,12 +40,12 @@ class _GlobalLoaderOverlayState extends State<GlobalLoaderOverlay>
 
   final List<_Particle> _particles = [];
   final math.Random _random = math.Random();
+  bool _particlesInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
-    _initializeParticles();
   }
 
   void _initializeAnimations() {
@@ -69,14 +69,11 @@ class _GlobalLoaderOverlayState extends State<GlobalLoaderOverlay>
     );
   }
 
-  void _initializeParticles() {
-    final screenWidth =
-        MediaQuery.of(context).size.width; // Use context cautiously
-    final screenHeight = MediaQuery.of(context).size.height;
+  void _initializeParticles(Size size) {
     for (int i = 0; i < 15; i++) {
       _particles.add(_Particle(
-        x: _random.nextDouble() * screenWidth,
-        y: _random.nextDouble() * screenHeight,
+        x: _random.nextDouble() * size.width,
+        y: _random.nextDouble() * size.height,
         size: _random.nextDouble() * 3 + 1,
         speed: _random.nextDouble() * 1.5 + 0.5,
         opacity: _random.nextDouble() * 0.4 + 0.1,
@@ -93,6 +90,12 @@ class _GlobalLoaderOverlayState extends State<GlobalLoaderOverlay>
 
   @override
   Widget build(BuildContext context) {
+    if (!_particlesInitialized) {
+      final size = MediaQuery.of(context).size;
+      _initializeParticles(size);
+      _particlesInitialized = true;
+    }
+
     return AnimatedBuilder(
       animation: GlobalLoader.of(context),
       builder: (context, child) {
